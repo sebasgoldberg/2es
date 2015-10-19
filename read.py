@@ -103,7 +103,7 @@ def read(filename):
             except NoDataRecordException:
                 pass
             except Exception:
-                print("ERROR en linea: %s" % line)
+                print(line)
 
     conn.commit()
 

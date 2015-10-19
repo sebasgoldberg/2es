@@ -12,106 +12,130 @@ from elasticsearch import Elasticsearch
 
 def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), cantidad_top=9999999, tipoCondicion=None, toleranciaIndice=2):
 
-    with open("top%s-tol%s-precios-venta.json"%(cantidad_top, toleranciaIndice),"w") as f:
+    command_line = {
+        "index": {
+            "_index":"precios",
+            "_type":"venta",
+            "_id":None
+        }}
 
-        command_line = {
-            "index": {
-                "_index":"precios",
-                "_type":"venta",
-                "_id":None
-            }}
+    conn = psycopg2.connect("dbname='precios'")
 
-        conn = psycopg2.connect("dbname='precios'")
+    cur = conn.cursor()
 
-        cur = conn.cursor()
+    query = """select tienda, material, unidadMedida, avg(precio) as media,
+            sqrt(abs(avg(precio*precio)- avg(precio)*avg(precio))) as varianza,
+            CASE WHEN avg(precio) = 0 THEN 0 else sqrt(abs(avg(precio*precio)- avg(precio)*avg(precio))) * 100 / avg(precio) end as porcentaje
+        from precio_dia
+        where
+            precio > 0"""
 
-        query = """select tienda, material, unidadMedida, avg(precio) as media,
-                sqrt(abs(avg(precio*precio)- avg(precio)*avg(precio))) as varianza,
-                CASE WHEN avg(precio) = 0 THEN 0 else sqrt(abs(avg(precio*precio)- avg(precio)*avg(precio))) * 100 / avg(precio) end as porcentaje
-            from precio_dia
-            where
-                precio > 0"""
+    if tipoCondicion is not None:
+        query = query + """ and tipoCondicion = %(tipoCondicion)s """
 
-        if tipoCondicion is not None:
-            query = query + """ and tipoCondicion = %(tipoCondicion)s """
+    query = query + """ group by tienda, material, unidadMedida
+        limit %(cantidad_top)s"""
 
-        query = query + """ group by tienda, material, unidadMedida
-            order by porcentaje desc
-            limit %(cantidad_top)s"""
+    cur.execute(
+        query,
+        {
+         'cantidad_top':cantidad_top,
+         'tipoCondicion':tipoCondicion})
 
-        cur.execute(
-            query,
-            {
-             'cantidad_top':cantidad_top,
-             'tipoCondicion':tipoCondicion})
+    analisis = {}
 
-        cur_desc = conn.cursor()
-        cur_hist = conn.cursor()
+    for register in cur:
 
-        for register in cur:
+        tienda, material, unidadMedida, media, desvio, indiceVariacion = register
 
-            analisisMaterial = {}
-            tienda, material, unidadMedida, media, desvio, indiceVariacion = register
-            if indiceVariacion <= toleranciaIndice:
-                continue
+        if indiceVariacion <= toleranciaIndice:
+            continue
 
-            analisisMaterial.update({"tienda": tienda.strip()})
-            analisisMaterial['material'] = material
-            analisisMaterial['unidadMedida'] = unidadMedida.strip()
-            analisisMaterial['media'] = media
-            analisisMaterial['desvio'] = desvio
-            analisisMaterial['indiceVariacion'] = indiceVariacion
+        if tienda not in analisis:
+            analisis[tienda] = {}
+        if material not in analisis[tienda]:
+            analisis[tienda][material] = {}
+        if unidadMedida not in analisis[tienda][material]:
+            analisis[tienda][material][unidadMedida] = {}
 
-            cur_desc.execute(
-                """select descripcion
-                from materiales
-                where material = %(material)s""",
-                {'material':material})
-            analisisMaterial['descripcion'] = cur_desc.fetchone()[0].strip().encode("utf-8","ignore").decode()
+        analisis[tienda][material][unidadMedida]['media'] = media
+        analisis[tienda][material][unidadMedida]['desvio'] = desvio
+        analisis[tienda][material][unidadMedida]['indiceVariacion'] = indiceVariacion
 
-            query = """
-                select fecha, precio, tipoCondicion
-                from precio_dia
-                where
-                    tienda = %(tienda)s and
-                    material = %(material)s and
-                    unidadMedida = %(unidadMedida)s and
-                    fecha >= %(desde)s and
-                    fecha <= %(hasta)s and
-                    precio > 0
-                """
+    cur.execute(
+        """select material, descripcion
+        from materiales """)
 
-            if tipoCondicion is not None:
-                query = query + """ and tipoCondicion = %(tipoCondicion)s """
+    descripciones = {}
+    for reg in cur:
+        material, descripcion = reg
+        descripciones[material] = descripcion
 
-            query = query + """ order by fecha """
 
-            cur_hist.execute(query,
-                             {'tienda':tienda,
-                              'desde':desde,
-                              'hasta':hasta,
-                              'material': material,
-                              'unidadMedida': unidadMedida,
-                              'tipoCondicion':tipoCondicion})
+    query = """
+        select tienda, material, unidadMedida, fecha, precio, tipoCondicion
+        from precio_dia
+        where
+            fecha >= %(desde)s and
+            fecha <= %(hasta)s and
+            precio > 0
+        """
 
-            for hist in cur_hist:
-                fecha, precio, tipoCondicionPrecioDia = hist
-                analisisMaterial.update({
-                    "fecha": str(fecha),
-                    "precio": precio,
-                    "tipoCondicion": tipoCondicionPrecioDia,
+    if tipoCondicion is not None:
+        query = query + """ and tipoCondicion = %(tipoCondicion)s """
+
+    cur.execute(query,
+                     { 'desde':desde,
+                      'hasta':hasta,
+                      'tipoCondicion':tipoCondicion})
+
+    CANT_REGS_FILE=100000
+    nreg=0
+    f=None
+
+    for reg in cur:
+
+        if (nreg % CANT_REGS_FILE) == 0:
+            nfile=nreg/CANT_REGS_FILE
+            if f is not None:
+                f.close()
+            f=open("precios-venta.%s.json"%str(nfile),"w")
+
+        tienda, material, unidadMedida, fecha, precio, tipoCondicionPrecioDia = reg
+        analisisMaterial = {
+            "tienda": tienda.strip(),
+            "material": material,
+            "unidadMedida": unidadMedida.strip(),
+            "fecha": str(fecha),
+            "precio": precio,
+            "tipoCondicion": tipoCondicionPrecioDia,
+        }
+
+        try:
+            analisisMaterial.update({
+                "descripcion": descripciones[material].strip(),
                 })
+        except KeyError:
+            print "ERROR: Descripcion material %s no encontrado" % material
+            continue
 
-                matid = "%(tienda)s%(unidadMedida)s%(material)s" % analisisMaterial
+        try:
+            analisisMaterial.update(analisis[tienda][material][unidadMedida])
+        except KeyError:
+            print "ERROR: Analisis material %s no encontrado" % material
+            continue
 
-                command_line['index']['_id'] = "%s%s" % (matid, str(analisisMaterial['fecha']).replace('-',''))
-                analisisMaterial.update({"matid": matid})
+        matid = "%(tienda)s%(unidadMedida)s%(material)s" % analisisMaterial
 
-                json.dump(command_line,f)
-                f.write('\n')
-                json.dump(analisisMaterial,f)
-                f.write('\n')
+        command_line['index']['_id'] = "%s%s" % (matid, str(analisisMaterial['fecha']).replace('-',''))
+        analisisMaterial.update({"matid": matid})
 
-                #res = es.index(index="precios", doc_type='venta', body=analisisMaterial)
+        json.dump(command_line,f)
+        f.write('\n')
+        json.dump(analisisMaterial,f)
+        f.write('\n')
 
-top_variance(cantidad_top=500, toleranciaIndice=4)
+        nreg = nreg + 1
+
+
+top_variance(cantidad_top=99999999, toleranciaIndice=-1)

@@ -89,6 +89,9 @@ def calc_fecha(row, fecha):
         if mayorPrioridadPrimerTipoCondicion(tipoCondicionExistente, tipoCondicion):
             return
 
+        if precioExistente <= precio:
+            return
+
     except KeyError:
 
         if tienda not in precios:
@@ -97,10 +100,6 @@ def calc_fecha(row, fecha):
             precios[tienda][material] = {}
         if unidad not in precios[tienda][material]:
             precios[tienda][material][unidad] = {}
-
-    if fecha in precios[tienda][material][unidad]:
-        if precios[tienda][material][unidad][fecha][1] <= precio:
-            return
 
     precios[tienda][material][unidad][fecha] = (tipoCondicion, precio, moneda)
 
@@ -162,5 +161,5 @@ def calc(desde, hasta, iv_tienda=None):
 
     conn.commit()
 
-calc(date.today()-TD(days=60), date.today())
+calc(date.today()-TD(days=30), date.today())
 
