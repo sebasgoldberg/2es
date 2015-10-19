@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#encoding=utf8
 
 import psycopg2
 from datetime import date
@@ -11,7 +12,7 @@ from elasticsearch import Elasticsearch
 
 def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), cantidad_top=9999999, tipoCondicion=None, toleranciaIndice=2):
 
-    with open("precios-venta.json","w",encoding="utf8") as f:
+    with open("top%s-tol%s-precios-venta.json"%(cantidad_top, toleranciaIndice),"w") as f:
 
         command_line = {
             "index": {
