@@ -7,10 +7,11 @@ from datetime import timedelta
 import math
 import json
 from elasticsearch import Elasticsearch
+import sys
 
 #es = Elasticsearch('http://evoca:9200')
 
-def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), cantidad_top=9999999, tipoCondicion=None, toleranciaIndice=2):
+def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), cantidad_top=9999999, tipoCondicion=None, toleranciaIndice=2, iv_tienda=None):
 
     command_line = {
         "index": {
@@ -32,6 +33,9 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
     if tipoCondicion is not None:
         query = query + """ and tipoCondicion = %(tipoCondicion)s """
+
+    if iv_tienda is not None:
+        query = query + """ and tienda = %(tienda)s """
 
     query = query + """ group by tienda, material, unidadMedida
         limit %(cantidad_top)s"""
@@ -137,5 +141,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
         nreg = nreg + 1
 
-
-top_variance(cantidad_top=99999999, toleranciaIndice=-1)
+tienda = None
+if len(sys.argv) > 1:
+  tienda = sys.argv[1]
+top_variance(cantidad_top=99999999, toleranciaIndice=-1, iv_tienda=tienda)
