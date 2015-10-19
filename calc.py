@@ -165,4 +165,6 @@ if len(sys.argv) > 1:
   for tienda in sys.argv[1:]:
     precios={}
     calc(date.today()-TD(days=30), date.today(), iv_tienda=tienda)
+else:
+    calc(date.today()-TD(days=30), date.today())
 
