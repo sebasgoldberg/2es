@@ -44,7 +44,8 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
         query,
         {
          'cantidad_top':cantidad_top,
-         'tipoCondicion':tipoCondicion})
+         'tipoCondicion':tipoCondicion,
+         'tienda': iv_tienda})
 
     analisis = {}
 
@@ -88,10 +89,14 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
     if tipoCondicion is not None:
         query = query + """ and tipoCondicion = %(tipoCondicion)s """
 
+    if iv_tienda is not None:
+        query = query + """ and tienda = %(tienda)s """
+
     cur.execute(query,
                      { 'desde':desde,
                       'hasta':hasta,
-                      'tipoCondicion':tipoCondicion})
+                      'tipoCondicion':tipoCondicion,
+                      'tienda':iv_tienda})
 
     CANT_REGS_FILE=100000
     nreg=0
@@ -103,7 +108,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
             nfile=nreg/CANT_REGS_FILE
             if f is not None:
                 f.close()
-            f=open("precios-venta.%s.json"%str(nfile),"w")
+            f=open("precios-venta.%s.%s.json" % (iv_tienda, str(nfile)),"w")
 
         tienda, material, unidadMedida, fecha, precio, tipoCondicionPrecioDia = reg
         analisisMaterial = {
