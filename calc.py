@@ -11,6 +11,7 @@ import psycopg2
 import sys
 from datetime import timedelta as TD
 from datetime import date
+from math import log
 
 conn = psycopg2.connect("dbname='precios'") 
 
@@ -146,25 +147,44 @@ def calc(desde, hasta, iv_tienda=None):
         for material, unidades in materiales.items():
             for unidad, fechas in unidades.items():
                 for fecha, (tipoCondicion, importe, moneda) in fechas.items():
+                    fecha_anterior = fecha - TD(days=1)
+                    if fecha_anterior in fechas:
+
+
+                        _ ,  importeAnterior, _ = fechas[fecha_anterior]
+                        if importeAnterior <> 0 and importe <> 0:
+                            variacion = importe - importeAnterior
+                            indice = 1 + variacion / float(importeAnterior)
+                            rankvartot = log(indice,2)
+                            rankvarabs = abs(rankvartot)
+                        else:
+                            rankvartot = 0
+                            rankvarabs = 0
+
                     cur.execute(
                         """insert into precio_dia
-                            (tienda, material, unidadMedida, fecha, tipoCondicion, precio, moneda)
+                            (tienda, material, unidadMedida, fecha, tipoCondicion, precio, moneda, rankvartot, rankvarabs)
                             values
-                            (%(tienda)s, %(material)s, %(unidadMedida)s, %(fecha)s, %(tipoCondicion)s, %(precio)s, %(moneda)s)""",
+                            (%(tienda)s, %(material)s, %(unidadMedida)s, %(fecha)s, %(tipoCondicion)s, %(precio)s, %(moneda)s, %(rankvartot)s, %(rankvarabs)s)""",
                         {"tienda": tienda,
                             "material": material,
                             "unidadMedida": unidad,
                             "fecha": fecha,
                             "tipoCondicion": tipoCondicion,
                             "precio": importe,
-                            "moneda": moneda,})
+                            "moneda": moneda,
+                            "rankvarabs": rankvarabs,
+                            "rankvartot": rankvartot})
 
     conn.commit()
+
+fecha_hasta = date(2015,10,21)
+fecha_desde = fecha_hasta - TD(days=30)
 
 if len(sys.argv) > 1:
   for tienda in sys.argv[1:]:
     precios={}
-    calc(date.today()-TD(days=30), date.today(), iv_tienda=tienda)
+    calc(fecha_desde, fecha_hasta, iv_tienda=tienda)
 else:
-    calc(date.today()-TD(days=30), date.today())
+    calc(fecha_desde, fecha_hasta, date.today())
 

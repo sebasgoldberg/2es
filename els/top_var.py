@@ -78,7 +78,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
 
     query = """
-        select tienda, material, unidadMedida, fecha, precio, tipoCondicion
+        select tienda, material, unidadMedida, fecha, precio, tipoCondicion, rankvartot, rankvarabs
         from precio_dia
         where
             fecha >= %(desde)s and
@@ -110,7 +110,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
                 f.close()
             f=open("precios-venta.%s.%s.json" % (iv_tienda, str(nfile)),"w")
 
-        tienda, material, unidadMedida, fecha, precio, tipoCondicionPrecioDia = reg
+        tienda, material, unidadMedida, fecha, precio, tipoCondicionPrecioDia, rankvartot, rankvarabs = reg
         analisisMaterial = {
             "tienda": tienda.strip(),
             "material": material,
@@ -118,6 +118,8 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
             "fecha": str(fecha),
             "precio": precio,
             "tipoCondicion": tipoCondicionPrecioDia,
+            "rankvarabs": rankvarabs,
+            "rankvartot": rankvartot,
         }
 
         try:
@@ -146,7 +148,10 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
         nreg = nreg + 1
 
+fecha_hasta = date(2015,10,21)
+fecha_desde = fecha_hasta - timedelta(days=30)
+
 tienda = None
 if len(sys.argv) > 1:
   tienda = sys.argv[1]
-top_variance(cantidad_top=99999999, toleranciaIndice=-1, iv_tienda=tienda)
+top_variance(desde=fecha_desde, hasta=fecha_hasta, cantidad_top=99999999, toleranciaIndice=-1, iv_tienda=tienda)
