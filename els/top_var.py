@@ -148,7 +148,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
         nreg = nreg + 1
 
-fecha_hasta = date(2015,10,21)
+fecha_hasta = date(2015,10,26)
 fecha_desde = fecha_hasta - timedelta(days=30)
 
 tienda = None

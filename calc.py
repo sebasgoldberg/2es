@@ -176,9 +176,9 @@ def calc(desde, hasta, iv_tienda=None):
                             "rankvarabs": rankvarabs,
                             "rankvartot": rankvartot})
 
-    conn.commit()
+                conn.commit()
 
-fecha_hasta = date(2015,10,21)
+fecha_hasta = date(2015,10,26)
 fecha_desde = fecha_hasta - TD(days=30)
 
 if len(sys.argv) > 1:
@@ -186,5 +186,5 @@ if len(sys.argv) > 1:
     precios={}
     calc(fecha_desde, fecha_hasta, iv_tienda=tienda)
 else:
-    calc(fecha_desde, fecha_hasta, date.today())
+    calc(fecha_desde, fecha_hasta)
 
