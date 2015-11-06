@@ -2,5 +2,5 @@
 
 for i in "$@"
 do
-  curl -XPUT localhost:9200/_bulk --data-binary "@$i" > /dev/null
+  curl -XPUT 10.151.1.21:9200/_bulk --data-binary "@$i" > /dev/null
 done
