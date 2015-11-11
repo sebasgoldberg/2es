@@ -1,0 +1,39 @@
+{
+    "properties": {
+       "descripcion": {
+          "type": "string",
+          "index": "not_analyzed"
+       },
+       "desvio": {
+          "type": "double"
+       },
+       "fecha": {
+          "type": "date",
+          "format": "dateOptionalTime"
+       },
+       "indiceVariacion": {
+          "type": "double"
+       },
+       "material": {
+          "type": "string"
+       },
+       "matid": {
+          "type": "string"
+       },
+       "media": {
+          "type": "double"
+       },
+       "precio": {
+          "type": "double"
+       },
+       "tienda": {
+          "type": "string"
+       },
+       "tipoCondicion": {
+          "type": "string"
+       },
+       "unidadMedida": {
+          "type": "string"
+       }
+    }
+}
