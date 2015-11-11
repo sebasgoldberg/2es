@@ -1,5 +1,9 @@
 {
     "properties": {
+       "descripGrupoMerc": {
+          "type": "string",
+          "index": "not_analyzed"
+       },
        "descripcion": {
           "type": "string",
           "index": "not_analyzed"

@@ -16,6 +16,8 @@ VALIDO_DESDE = 6
 PRECIO = 7
 MONEDA = 9
 DESCRIPCION = 10
+GRUPO_MERCADERIA = 11
+DESCRIP_GRUPO_MERC = 12
 
 class NoDataRecordException(Exception):
     pass
@@ -34,7 +36,8 @@ def parse(line):
     if register[PRECIO] == "":
         register[PRECIO] = "0"
     return ({"material": register[MATERIAL],
-        "descripcion": register[DESCRIPCION],},
+        "descripcion": register[DESCRIPCION],
+        "grupoMercaderia": register[GRUPO_MERCADERIA]},
         {"tipoCondicion":register[TIPO_CONDICION],
             "material": register[MATERIAL],
             "materialPadre": register[MATERIAL_PADRE],
@@ -43,7 +46,9 @@ def parse(line):
             "unidadMedida": register[UNIDAD_MEDIDA],
             "tienda": register[TIENDA],
             "precio": float(register[PRECIO].replace('.','').replace(',','.')),
-            "moneda": "BRL",})
+            "moneda": "BRL",},
+            {'grupoMercaderia':register[GRUPO_MERCADERIA],
+            'descripGrupoMerc': register[DESCRIP_GRUPO_MERC],})
 
 def read(filename):
     conn = psycopg2.connect("dbname='precios'")
@@ -57,13 +62,22 @@ def read(filename):
             line = line.strip()
             line = line.decode("utf8","replace")
             try:
-                material, condicion= parse(line)
-                
+                material, condicion, grupoMercaderia= parse(line)
+
                 #print(material)
                 cur.execute("select * from materiales where material = %(material)s", material)
                 rows = cur.fetchall()
                 if len(rows) == 0:
-                    cur.execute("insert into materiales (material, descripcion) values (%(material)s, %(descripcion)s)", material)
+                    cur.execute("""insert into materiales 
+                        (material, descripcion, grupoMercaderia)
+                        values (%(material)s, %(descripcion)s, %(grupoMercaderia)s)""", material)
+
+                    cur.execute("select * from grupoMercaderia where grupoMercaderia = %(grupoMercaderia)s", grupoMercaderia)
+                    rows = cur.fetchall()
+                    if len(rows) == 0:
+                        cur.execute("""insert into grupoMercaderia 
+                            (grupoMercaderia, descripGrupoMerc) 
+                            values (%(grupoMercaderia)s, %(descripGrupoMerc)s)""", grupoMercaderia)
 
                 #print(condicion)
                 cur.execute(
@@ -75,7 +89,9 @@ def read(filename):
                             material = %(material)s and
                             unidadMedida = %(unidadMedida)s and
                             validoDesde = %(validoDesde)s""", condicion)
+
                 rows = cur.fetchall()
+
                 if len(rows) == 0:
                     cur.execute(
                         """insert into condicionesMateriales (
@@ -97,13 +113,13 @@ def read(filename):
                             %(materialPadre)s,
                             %(validoHasta)s,
                             %(precio)s,
-                            %(moneda)s ) """, condicion)
+                            %(moneda)s) """, condicion)
 
                 #print ("OK")
             except NoDataRecordException:
                 pass
-            except Exception:
-                print(line)
+            #except Exception:
+                #print(line)
 
     conn.commit()
 

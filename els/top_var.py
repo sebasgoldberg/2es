@@ -11,6 +11,10 @@ import sys
 
 #es = Elasticsearch('http://evoca:9200')
 
+DESCRIPCION = 0
+GRUPO_MERCADERIA = 1
+DESCRIP_GRUPO_MERC = 2
+
 def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), cantidad_top=9999999, tipoCondicion=None, toleranciaIndice=2, iv_tienda=None):
 
     command_line = {
@@ -68,13 +72,14 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
         analisis[tienda][material][unidadMedida]['indiceVariacion'] = indiceVariacion
 
     cur.execute(
-        """select material, descripcion
-        from materiales """)
+        """select a.material, a.descripcion, a.grupoMercaderia, b.descripGrupoMerc
+        from materiales a inner join grupoMercaderia b
+        on a.grupoMercaderia = b.grupoMercaderia""")
 
-    descripciones = {}
+    materiales = {}
     for reg in cur:
-        material, descripcion = reg
-        descripciones[material] = descripcion
+        material, descripcion, grupoMercaderia, descripGrupoMerc = reg
+        materiales[material] = (descripcion, grupoMercaderia, descripGrupoMerc)
 
 
     query = """
@@ -124,7 +129,9 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
         try:
             analisisMaterial.update({
-                "descripcion": descripciones[material].strip(),
+                "descripcion": materiales[material][DESCRIPCION].strip(),
+                "grupoMercaderia": materiales[material][GRUPO_MERCADERIA],
+                "descripGrupoMerc": materiales[material][DESCRIP_GRUPO_MERC].strip(),
                 })
         except KeyError:
             print "ERROR: Descripcion material %s no encontrado" % material
@@ -148,7 +155,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
         nreg = nreg + 1
 
-fecha_hasta = date(2015,10,26)
+fecha_hasta = date(2015,11,11)
 fecha_desde = fecha_hasta - timedelta(days=30)
 
 tienda = None
