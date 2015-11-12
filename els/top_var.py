@@ -8,6 +8,10 @@ import math
 import json
 from elasticsearch import Elasticsearch
 import sys
+import datetime
+
+sys.path.append('./')
+from venda import tz
 
 #es = Elasticsearch('http://evoca:9200')
 
@@ -81,6 +85,14 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
         material, descripcion, grupoMercaderia, descripGrupoMerc = reg
         materiales[material] = (descripcion, grupoMercaderia, descripGrupoMerc)
 
+    cur.execute(
+        """select seccion, descripcion
+        from secciones""")
+
+    secciones = {}
+    for reg in cur:
+        seccion, descripcion = reg
+        secciones[seccion] = descripcion
 
     query = """
         select tienda, material, unidadMedida, fecha, precio, tipoCondicion, rankvartot, rankvarabs
@@ -120,7 +132,8 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
             "tienda": tienda.strip(),
             "material": material,
             "unidadMedida": unidadMedida.strip(),
-            "fecha": str(fecha),
+            "fecha": datetime.datetime(fecha.year,
+                fecha.month,fecha.day,12).replace(tzinfo=tz.brst).astimezone(tz.utc).strftime("%Y-%m-%d %H:%M:%S"),
             "precio": precio,
             "tipoCondicion": tipoCondicionPrecioDia,
             "rankvarabs": rankvarabs,
@@ -128,11 +141,17 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
         }
 
         try:
+            seccion = materiales[material][GRUPO_MERCADERIA][0:2]
             analisisMaterial.update({
                 "descripcion": materiales[material][DESCRIPCION].strip(),
-                "grupoMercaderia": materiales[material][GRUPO_MERCADERIA],
-                "descripGrupoMerc": materiales[material][DESCRIP_GRUPO_MERC].strip(),
+                #"grupoMercaderia": materiales[material][GRUPO_MERCADERIA],
+                #"descripGrupoMerc": materiales[material][DESCRIP_GRUPO_MERC].strip(),
+                "seccion": seccion,
+                "descripSeccion": secciones[seccion],
                 })
+
+            if analisisMaterial["descripSeccion"][0:6] == "SECAO ":
+                analisisMaterial["descripSeccion"] = analisisMaterial["descripSeccion"][6:]
         except KeyError:
             print "ERROR: Descripcion material %s no encontrado" % material
             continue
@@ -145,7 +164,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
         matid = "%(tienda)s%(unidadMedida)s%(material)s" % analisisMaterial
 
-        command_line['index']['_id'] = "%s%s" % (matid, str(analisisMaterial['fecha']).replace('-',''))
+        command_line['index']['_id'] = "%s%s" % (matid, str(analisisMaterial['fecha'].split(' ')[0]).replace('-',''))
         analisisMaterial.update({"matid": matid})
 
         json.dump(command_line,f)
