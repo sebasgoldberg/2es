@@ -4,7 +4,6 @@ __author__ = 'JSGold'
 
 import datetime
 import sys
-import json
 
 ANO = 0
 PERIODO = 1
@@ -12,49 +11,11 @@ USUARIO = 2
 TRANSACCION = 3
 PASOS = 4
             
-
-class ElasticFilesGenerator:
-
-    def __init__(self, iv_index, iv_type, iv_file_name_prefix):
-
-        self.command_line = {
-            "index": {
-                "_index": iv_index,
-                "_type": iv_type,
-            }}
-
- 
-        self.CANT_REGS_FILE=50000
-        self.nreg=0
-        self.fsalida=None
-        self.file_name_prefix = iv_file_name_prefix
-
-    def __del__(self):
-        if self.fsalida is not None:
-            self.fsalida.close()
-   
-    def add(self, iv_object, iv_id=None):
-
-        if (self.nreg % self.CANT_REGS_FILE) == 0:
-            nfile = self.nreg / self.CANT_REGS_FILE
-            if self.fsalida is not None:
-                self.fsalida.close()
-            self.fsalida = open("%s.%s.json" % (self.file_name_prefix, str(nfile)),"w")
-
-        if iv_id is not None:
-            command_line['index'].update({ '_id': iv_id })
-
-        json.dump(self.command_line, self.fsalida)
-        self.fsalida.write('\n')
-        json.dump(iv_object, self.fsalida)
-        self.fsalida.write('\n')
-
-        self.nreg = self.nreg + 1
-
+sys.path.append('./')
+from els.utils import ElasticFilesGenerator
 
 class NoDataRecordException(Exception):
     pass
-
 
 def parse(line):
     register = line.split('|')

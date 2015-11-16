@@ -4,4 +4,5 @@ results/*
 precios*.json
 usrtrx*.json
 venta*.json
+ruptura*.json
 *.pyc
