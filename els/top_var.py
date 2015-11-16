@@ -76,14 +76,13 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
         analisis[tienda][material][unidadMedida]['indiceVariacion'] = indiceVariacion
 
     cur.execute(
-        """select a.material, a.descripcion, a.grupoMercaderia, b.descripGrupoMerc
-        from materiales a inner join grupoMercaderia b
-        on a.grupoMercaderia = b.grupoMercaderia""")
+        """select material, descripcion, grupoMercaderia
+        from materiales""")
 
     materiales = {}
     for reg in cur:
-        material, descripcion, grupoMercaderia, descripGrupoMerc = reg
-        materiales[material] = (descripcion, grupoMercaderia, descripGrupoMerc)
+        material, descripcion, grupoMercaderia = reg
+        materiales[material] = (descripcion, grupoMercaderia)
 
     cur.execute(
         """select seccion, descripcion
@@ -174,7 +173,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
 
         nreg = nreg + 1
 
-fecha_hasta = date(2015,11,11)
+fecha_hasta = date(2015,11,12)
 fecha_desde = fecha_hasta - timedelta(days=30)
 
 tienda = None

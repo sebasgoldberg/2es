@@ -2,5 +2,6 @@ data/*
 results/*
 *~*
 precios*.json
+usrtrx*.json
 venta*.json
 *.pyc
