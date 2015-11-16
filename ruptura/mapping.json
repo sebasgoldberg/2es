@@ -1,0 +1,46 @@
+{
+        "properties" : {
+          "ruptura" : {
+            "type" : "short"
+          },
+
+          "perda_estimada_semana" : {
+            "type" : "double"
+          },
+
+          "data" : {
+            "type" : "date",
+            "format" : "yyyy-MM-dd HH:mm:ss"
+          },
+
+          "material" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "descricao_mat" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "matid" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "setor" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "fornecedor" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "loja" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "uf_loja" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          }
+
+        }
+}

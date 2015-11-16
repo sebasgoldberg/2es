@@ -1,0 +1,96 @@
+#!/usr/bin/python
+#encoding=utf8
+__author__ = 'JSGold'
+
+import datetime
+import sys
+import ntpath
+
+FORNECEDOR = 0
+SETOR = 1
+#GRUPO = 2
+LOJA = 3
+#NOME_LOJA = 4
+UF_LOJA = 5
+#STATUS_ITEM = 6
+ITEM = 7
+DESCRICAO_PRODUTO = 8
+VENDA_ULTIMOS_90_DIAS = 9
+#DIAS_SEM_VENDA = 10
+#PERDA_VENDAS_EM_UNIDADES = 11
+#PERDA_VENDAS_EM_REAIS = 12
+#DIAS_SEM_VENDA_ULTIMOS_90_DIAS = 13
+#ESTOQUE_LOJA = 14
+#PEDIDO_PENDENTE_LOJA = 15
+#ESTOQUE_LOJA_E_PEDIDO_PENDENTE_LOJA = 16
+#COBERTURA_ESTOQUE = 17
+#SUJESTAO_HOJE = 18
+#SUJESTAO_ESTOQUE_ZERO = 19
+#QUANTIDADE_ULTIMA_ENTRADA_ESTOQUE = 20
+#DATA_ULTIMA_ENTRADA_ESTOQUE_NA_LOJA = 21
+#DATA_ULTIMA_POSICAO_ESTOQUE = 22
+#ESTOQUE_CD_ABASTECEDOR = 23
+#DATA_ULTIMA_ENTRADA_ESTOQUE_CD = 24
+#QUANTIDADE_PEDIDO_PENDENTE_CD_ABASTECEDOR = 25
+#CUSTO_ITEM = 26
+#PRECO_SISTEMA = 27
+#PRAZO_ENTREGA_CD = 28
+#PRAZO_ENTREGA_FORNECEDOR = 29
+
+INDEX = 'ruptura'
+TYPE = 'ruptura'
+FILE_NAME_PREFIX = 'ruptura'
+
+sys.path.append('./')
+from els.utils import ElasticFilesGenerator
+
+class NoDataRecordException(Exception):
+    pass
+
+def parse(line):
+    register = line.split('\t')
+    if len(register) < 30:
+        raise NoDataRecordException(u'Registro de datos no encontrado')
+    for i in range(len(register)):
+        register[i] = register[i].strip()
+    return ({"fornecedor": register[FORNECEDOR],
+        "setor": register[SETOR],
+        "loja": register[LOJA],
+        "uf_loja": register[UF_LOJA],
+        "material": register[ITEM],
+        "descricao_mat": register[DESCRICAO_PRODUTO],
+        "venda_ultimos_90_dias": float(register[VENDA_ULTIMOS_90_DIAS].replace('.','').replace(',','.')), })
+
+
+def read(filename):
+
+    lineNum = 0
+    head, tail = ntpath.split(filename)
+    data = str( datetime.datetime(
+             int(tail[0:4]), int(tail[4:6]), int(tail[6:8]), 12))
+    efg = ElasticFilesGenerator(INDEX,TYPE,FILE_NAME_PREFIX)
+
+    with open(filename, 'r') as f:
+        for line in f:
+            lineNum = lineNum + 1
+            if lineNum <= 0:
+                continue
+
+            line = line.strip()
+            line = line.decode("utf8","replace")
+            try:
+                register = parse(line)
+                register['data'] = data
+                register['ruptura'] = 1
+                register['perda_estimada_semana'] = - ( register['venda_ultimos_90_dias'] * 7 ) / 90 
+                register['matid'] = '%s%s' % (register['loja'], register['material'])
+                register.pop('venda_ultimos_90_dias')
+                efg.add(register, '%s%s' % (register['matid'], register['data']))
+
+            except NoDataRecordException:
+                pass
+            #except Exception:
+                #print(line)
+
+for f in sys.argv[1:]:
+    read(f)
