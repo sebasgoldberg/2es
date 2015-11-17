@@ -59,21 +59,23 @@ def parse(line):
         "uf_loja": register[UF_LOJA],
         "material": register[ITEM],
         "descricao_mat": register[DESCRICAO_PRODUTO],
-        "venda_ultimos_90_dias": float(register[VENDA_ULTIMOS_90_DIAS].replace('.','').replace(',','.')), })
+        "venda_ultimos_90_dias": float(register[VENDA_ULTIMOS_90_DIAS].strip('"').replace('.','').replace(',','.')), })
 
 
 def read(filename):
 
     lineNum = 0
     head, tail = ntpath.split(filename)
-    data = str( datetime.datetime(
-             int(tail[0:4]), int(tail[4:6]), int(tail[6:8]), 12))
-    efg = ElasticFilesGenerator(INDEX,TYPE,FILE_NAME_PREFIX)
+    data = datetime.datetime(
+             int(tail[0:4]), int(tail[5:7]), int(tail[8:10]), 12
+             ) - datetime.timedelta(days=1)
+    efg = ElasticFilesGenerator(INDEX,TYPE,'%s.%s' % (FILE_NAME_PREFIX, str(data.date())))
+    data = str(data)
 
     with open(filename, 'r') as f:
         for line in f:
             lineNum = lineNum + 1
-            if lineNum <= 0:
+            if lineNum <= 10:
                 continue
 
             line = line.strip()
@@ -83,6 +85,7 @@ def read(filename):
                 register['data'] = data
                 register['ruptura'] = 1
                 register['perda_estimada_semana'] = - ( register['venda_ultimos_90_dias'] * 7 ) / 90 
+                register['perda'] = - register['venda_ultimos_90_dias'] / 90 
                 register['matid'] = '%s%s' % (register['loja'], register['material'])
                 register.pop('venda_ultimos_90_dias')
                 efg.add(register, '%s%s' % (register['matid'], register['data']))

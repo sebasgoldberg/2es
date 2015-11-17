@@ -4,6 +4,9 @@
             "type" : "short"
           },
 
+          "perda" : {
+            "type" : "double"
+          },
           "perda_estimada_semana" : {
             "type" : "double"
           },
