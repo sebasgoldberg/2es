@@ -1,8 +1,9 @@
 data/*
 results/*
 *~*
+*.pyc
 precios*.json
 usrtrx*.json
 venta*.json
 ruptura*.json
-*.pyc
+mac*.json

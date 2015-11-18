@@ -1,0 +1,25 @@
+{
+        "properties" : {
+          "estado_antivirus" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "mac_address" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "nome_maquina" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "nome_usuario" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          },
+          "usuario_red" : {
+            "type" : "string",
+            "index": "not_analyzed"
+          }
+
+        }
+}
