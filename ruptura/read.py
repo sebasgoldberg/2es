@@ -41,8 +41,8 @@ INDEX = 'ruptura'
 TYPE = 'ruptura'
 FILE_NAME_PREFIX = 'ruptura'
 
-sys.path.append('./')
 from els.utils import ElasticFilesGenerator
+
 
 class NoDataRecordException(Exception):
     pass

@@ -4,6 +4,9 @@
 
 import json
 
+from els.lang import Lang
+
+L = Lang.get_instance()
 
 class ElasticFilesGenerator:
 
@@ -44,4 +47,22 @@ class ElasticFilesGenerator:
         self.nreg = self.nreg + 1
 
 
+class MappingFileGenerator:
 
+    def __init__(self):
+        self.mapping = {}
+        self.mapping['properties'] = {}
+
+    def add(self, field, fieldtype=None):
+        if fieldtype is None:
+            fieldtype = L.get_fieldtype(field)
+        self.mapping['properties'][field] = {}
+        self.mapping['properties'][field]['type'] = fieldtype
+        if fieldtype == 'date':
+            self.mapping['properties'][field]['format'] = "yyyy-MM-dd HH:mm:ss"
+        elif fieldtype == 'string':
+            self.mapping['properties'][field]['index'] = "not_analyzed"
+
+    def save(self, filepath):
+        with open(filepath,"w") as f:
+            json.dump(self.mapping, f, sort_keys=True, indent=4)

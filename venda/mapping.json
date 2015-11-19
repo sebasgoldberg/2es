@@ -1,54 +1,44 @@
 {
-        "properties" : {
-          "cantidad" : {
-            "type" : "double"
-          },
-          "costo" : {
-            "type" : "double"
-          },
-          "dia" : {
-            "type" : "date",
-            "format" : "yyyy-MM-dd HH:mm:ss"
-          },
-          "impuestos" : {
-            "type" : "double"
-          },
-          "material" : {
-            "type" : "string",
-            "index": "not_analyzed"
-          },
-          "material_descripcion" : {
-            "type" : "string",
-            "index": "not_analyzed"
-          },
-          "matid" : {
-            "type" : "string",
-            "index": "not_analyzed"
-          },
-          "organizacion_venta" : {
-            "type" : "string",
-            "index": "not_analyzed"
-          },
-          "organizacion_venta_descripcion" : {
-            "type" : "string",
-            "index": "not_analyzed"
-          },
-          "porcentaje_margen" : {
-            "type" : "double"
-          },
-          "seccion" : {
-            "type" : "string",
-            "index": "not_analyzed"
-          },
-          "tienda" : {
-            "type" : "string",
-            "index": "not_analyzed"
-          },
-          "venta_bruta" : {
-            "type" : "double"
-          },
-          "venta_liquida" : {
-            "type" : "double"
-          }
+    "properties": {
+        "custo": {
+            "type": "double"
+        }, 
+        "data": {
+            "format": "yyyy-MM-dd HH:mm:ss", 
+            "type": "date"
+        }, 
+        "descricao_material": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "descricao_secao": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "loja": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "material": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "matid": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "quantidade": {
+            "type": "double"
+        }, 
+        "secao": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "venda_bruta": {
+            "type": "double"
+        }, 
+        "venda_liquida": {
+            "type": "double"
         }
+    }
 }

@@ -7,6 +7,14 @@ import sys
 import datetime
 import json
 import tz
+from els.lang import Lang
+from bd.materiales import Materiales
+from bd.secciones import Secciones
+from els.utils import ElasticFilesGenerator
+
+L=Lang.get_instance()
+materiales = Materiales()
+secciones = Secciones()
 
 #"";"";"";"";"";"";"";"Venda Bruta Atual";"Venda Líquida Atual";"Quantidade UMB Atual";"Custo Atual";"Margem Líquida Atual";"Impostos Totais"
 #"Loja";"Dia";"Organização de Vendas";"Organização de Vendas";"Material";"Material";"[BI] Seçao";"BRL";"BRL";"";"BRL";"%";"BRL"
@@ -41,66 +49,49 @@ def parse(line):
     if register[0] == "Loja":
         raise NoDataRecordException(u"El registro de totales no es un registro de datos")
     return ({
-        "tienda": register[TIENDA],
-        "dia": datetime.datetime.strptime(register[DIA],"%d.%m.%Y").replace(tzinfo=tz.brst).astimezone(tz.utc).strftime("%Y-%m-%d %H:%M:%S"),
-        "organizacion_venta": register[ORGANIZACION_VENTA],
-        "organizacion_venta_descripcion": register[ORGANIZACION_VENTA_DESCRIPCION],
-        "material": register[MATERIAL],
-        "material_descripcion": register[MATERIAL_DESCRIPCION],
-        "seccion": register[SECCION],
-        "venta_bruta": float(register[VENTA_BRUTA].replace('.','').replace(',','.')),
-        "venta_liquida": float(register[VENTA_LIQUIDA].replace('.','').replace(',','.')),
-        "cantidad": float(register[CANTIDAD].replace('.','').replace(',','.')),
-        "costo": float(register[COSTO].replace('.','').replace(',','.')),
-        "porcentaje_margen": float(register[PORCENTAJE_MARGEN].replace('.','').replace(',','.'))/100,
-        "impuestos": float(register[IMPUESTOS].replace('.','').replace(',','.')),
+        L.loja: register[TIENDA],
+        L.data: datetime.datetime.strptime(register[DIA],"%d.%m.%Y").replace(tzinfo=tz.brst).astimezone(tz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+        #"organizacion_register": register[ORGANIZACION_VENTA],
+        #"organizacion_register_descripcion": register[ORGANIZACION_VENTA_DESCRIPCION],
+        L.material: register[MATERIAL],
+        L.descricao_material: register[MATERIAL_DESCRIPCION],
+        L.secao: register[SECCION],
+        L.venda_bruta: float(register[VENTA_BRUTA].replace('.','').replace(',','.')),
+        L.venda_liquida: float(register[VENTA_LIQUIDA].replace('.','').replace(',','.')),
+        L.quantidade: float(register[CANTIDAD].replace('.','').replace(',','.')),
+        L.custo: float(register[COSTO].replace('.','').replace(',','.')),
+        #"porcentaje_margen": float(register[PORCENTAJE_MARGEN].replace('.','').replace(',','.'))/100,
+        #"impuestos": float(register[IMPUESTOS].replace('.','').replace(',','.')),
         })
+
+INDEX = 'venda'
+TYPE = 'venda'
+FILE_NAME_PREFIX = 'venda'
 
 def read(filename):
 
-    command_line = {
-        "index": {
-            "_index":"ventas",
-            "_type":"venta",
-            "_id":None
-        }}
-
-
-    CANT_REGS_FILE=50000
-    nreg=0
-    fsalida=None
+    efg = ElasticFilesGenerator(INDEX, TYPE, FILE_NAME_PREFIX)
 
     with open(filename, 'r') as f:
         for line in f:
 
-            if (nreg % CANT_REGS_FILE) == 0:
-                nfile=nreg/CANT_REGS_FILE
-                if fsalida is not None:
-                    fsalida.close()
-                fsalida=open("venta.%s.json" % str(nfile),"w")
-
             line = line.strip()
             line = line.decode("utf8","replace")
+
             try:
-                venta = parse(line)
-                matid = "%(tienda)s%(material)s" % venta
-                command_line['index']['_id'] = "%s%s" % (matid, str(venta['dia']).replace('-',''))
-                venta.update({"matid": matid})
+                register = parse(line)
+                register[L.secao] = materiales.get_seccion(register[L.material])
+                register[L.descricao_secao] = secciones.get_descripcion(register[L.secao])
+                matid = "%s%s" % (register[L.loja], register[L.material])
+                register.update({L.matid: matid})
 
-                json.dump(command_line,fsalida)
-                fsalida.write('\n')
-                json.dump(venta,fsalida)
-                fsalida.write('\n')
-
-                nreg = nreg + 1
+                efg.add(register, "%s%s" % (matid, str(register[L.data]).replace('-','')))
 
 
             except NoDataRecordException:
                 pass
             #except Exception:
                 #print(line)
-        if fsalida is not None:
-            fsalida.close()
 
 for f in sys.argv:
     read(f)
