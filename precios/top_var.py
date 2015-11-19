@@ -9,8 +9,11 @@ import json
 from elasticsearch import Elasticsearch
 import sys
 import datetime
+from els.lang import Lang
+from bd.materiales import Materiales
+from bd.secciones import Secciones
+from els.utils import ElasticFilesGenerator
 
-sys.path.append('./')
 from venda import tz
 
 #es = Elasticsearch('http://evoca:9200')
@@ -18,6 +21,11 @@ from venda import tz
 DESCRIPCION = 0
 GRUPO_MERCADERIA = 1
 DESCRIP_GRUPO_MERC = 2
+
+L=Lang.get_instance()
+materiales = Materiales()
+secciones = Secciones()
+
 
 def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), cantidad_top=9999999, tipoCondicion=None, toleranciaIndice=2, iv_tienda=None):
 
@@ -71,27 +79,9 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
         if unidadMedida not in analisis[tienda][material]:
             analisis[tienda][material][unidadMedida] = {}
 
-        analisis[tienda][material][unidadMedida]['media'] = media
-        analisis[tienda][material][unidadMedida]['desvio'] = desvio
-        analisis[tienda][material][unidadMedida]['indiceVariacion'] = indiceVariacion
-
-    cur.execute(
-        """select material, descripcion, grupoMercaderia
-        from materiales""")
-
-    materiales = {}
-    for reg in cur:
-        material, descripcion, grupoMercaderia = reg
-        materiales[material] = (descripcion, grupoMercaderia)
-
-    cur.execute(
-        """select seccion, descripcion
-        from secciones""")
-
-    secciones = {}
-    for reg in cur:
-        seccion, descripcion = reg
-        secciones[seccion] = descripcion
+        analisis[tienda][material][unidadMedida][L.media] = media
+        analisis[tienda][material][unidadMedida][L.desvio] = desvio
+        analisis[tienda][material][unidadMedida][L.indice_variacion] = indiceVariacion
 
     query = """
         select tienda, material, unidadMedida, fecha, precio, tipoCondicion, rankvartot, rankvarabs
@@ -114,67 +104,45 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
                       'tipoCondicion':tipoCondicion,
                       'tienda':iv_tienda})
 
-    CANT_REGS_FILE=100000
-    nreg=0
-    f=None
+    efg = ElasticFilesGenerator("precos", "venda", "precios-venta.%s" % iv_tienda)
 
     for reg in cur:
 
-        if (nreg % CANT_REGS_FILE) == 0:
-            nfile=nreg/CANT_REGS_FILE
-            if f is not None:
-                f.close()
-            f=open("precios-venta.%s.%s.json" % (iv_tienda, str(nfile)),"w")
-
         tienda, material, unidadMedida, fecha, precio, tipoCondicionPrecioDia, rankvartot, rankvarabs = reg
-        analisisMaterial = {
-            "tienda": tienda.strip(),
-            "material": material,
-            "unidadMedida": unidadMedida.strip(),
-            "fecha": datetime.datetime(fecha.year,
+        register = {
+            L.loja: tienda.strip(),
+            L.material: material,
+            L.unidade_medida: unidadMedida.strip(),
+            L.data: datetime.datetime(fecha.year,
                 fecha.month,fecha.day,12).replace(tzinfo=tz.brst).astimezone(tz.utc).strftime("%Y-%m-%d %H:%M:%S"),
-            "precio": precio,
-            "tipoCondicion": tipoCondicionPrecioDia,
-            "rankvarabs": rankvarabs,
-            "rankvartot": rankvartot,
+            L.preco: precio,
+            L.tipo_condicao: tipoCondicionPrecioDia,
+            L.rankvarabs: rankvarabs,
+            L.rankvartot: rankvartot,
         }
 
-        try:
-            seccion = materiales[material][GRUPO_MERCADERIA][0:2]
-            analisisMaterial.update({
-                "descripcion": materiales[material][DESCRIPCION].strip(),
-                #"grupoMercaderia": materiales[material][GRUPO_MERCADERIA],
-                #"descripGrupoMerc": materiales[material][DESCRIP_GRUPO_MERC].strip(),
-                "seccion": seccion,
-                "descripSeccion": secciones[seccion],
-                })
-
-            if analisisMaterial["descripSeccion"][0:6] == "SECAO ":
-                analisisMaterial["descripSeccion"] = analisisMaterial["descripSeccion"][6:]
-        except KeyError:
-            print "ERROR: Descripcion material %s no encontrado" % material
-            continue
+        register[L.descricao_material] = materiales.get_descricao(material)
+        register[L.secao] = materiales.get_seccion(register[L.material])
+        register[L.descricao_secao] = secciones.get_descripcion(register[L.secao])
 
         try:
-            analisisMaterial.update(analisis[tienda][material][unidadMedida])
+            register.update(analisis[tienda][material][unidadMedida])
         except KeyError:
             print "ERROR: Analisis material %s no encontrado" % material
             continue
 
-        matid = "%(tienda)s%(unidadMedida)s%(material)s" % analisisMaterial
+        matid_com_um = "%s%s%s" % (register[L.loja],
+            register[L.unidade_medida], register[L.material])
+        register[L.matid_com_um] = matid_com_um
 
-        command_line['index']['_id'] = "%s%s" % (matid, str(analisisMaterial['fecha'].split(' ')[0]).replace('-',''))
-        analisisMaterial.update({"matid": matid})
+        matid = "%s%s" % (register[L.loja], register[L.material])
+        register[L.matid] = matid
 
-        json.dump(command_line,f)
-        f.write('\n')
-        json.dump(analisisMaterial,f)
-        f.write('\n')
+        efg.add(register, "%s%s" % (matid_com_um, str(register[L.data].split(' ')[0]).replace('-','')))
 
-        nreg = nreg + 1
 
 fecha_hasta = date(2015,11,12)
-fecha_desde = fecha_hasta - timedelta(days=30)
+fecha_desde = fecha_hasta - timedelta(days=2)
 
 tienda = None
 if len(sys.argv) > 1:

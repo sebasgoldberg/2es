@@ -38,3 +38,11 @@ class Materiales:
             return self.materiales[material][GRUPO_MERCADERIA][0:2]
         else:
             return 'NA'
+
+    def get_descricao(self, material):
+        material = int(material)
+        
+        if material in self.materiales:
+            return self.materiales[material][DESCRIPCION].strip()
+        else:
+            return 'NA'

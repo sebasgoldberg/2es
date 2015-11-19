@@ -10,12 +10,6 @@ def clear():
 
     cur.execute("delete from condicionesMateriales")
 
-    cur.execute("delete from precio_dia")
-
-    cur.execute("delete from materiales")
-
     conn.commit()
-
-
 
 clear()

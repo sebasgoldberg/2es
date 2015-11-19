@@ -71,13 +71,25 @@ def read(filename):
                     cur.execute("""insert into materiales 
                         (material, descripcion, grupoMercaderia)
                         values (%(material)s, %(descripcion)s, %(grupoMercaderia)s)""", material)
+                else:
+                    cur.execute("""update materiales 
+                        set
+                            descripcion = %(descripcion)s,
+                            grupoMercaderia = %(grupoMercaderia)s
+                        where material = %(material)s""", material)
 
-                    cur.execute("select * from grupoMercaderia where grupoMercaderia = %(grupoMercaderia)s", grupoMercaderia)
-                    rows = cur.fetchall()
-                    if len(rows) == 0:
-                        cur.execute("""insert into grupoMercaderia 
-                            (grupoMercaderia, descripGrupoMerc) 
-                            values (%(grupoMercaderia)s, %(descripGrupoMerc)s)""", grupoMercaderia)
+
+                cur.execute("select * from grupoMercaderia where grupoMercaderia = %(grupoMercaderia)s", grupoMercaderia)
+                rows = cur.fetchall()
+                if len(rows) == 0:
+                    cur.execute("""insert into grupoMercaderia 
+                        (grupoMercaderia, descripGrupoMerc) 
+                        values (%(grupoMercaderia)s, %(descripGrupoMerc)s)""", grupoMercaderia)
+                else:
+                    cur.execute("""update grupoMercaderia 
+                        set
+                            descripGrupoMerc = %(descripGrupoMerc)s
+                        where grupoMercaderia = %(grupoMercaderia)s""", grupoMercaderia)
 
                 #print(condicion)
                 cur.execute(
@@ -115,13 +127,14 @@ def read(filename):
                             %(precio)s,
                             %(moneda)s) """, condicion)
 
+                conn.commit()
+
                 #print ("OK")
             except NoDataRecordException:
                 pass
             #except Exception:
                 #print(line)
 
-    conn.commit()
 
 for f in sys.argv:
     read(f)

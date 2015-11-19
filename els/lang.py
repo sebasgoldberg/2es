@@ -34,6 +34,11 @@ class Lang:
         self.custo = "custo"
         self.perda = "perda"
         self.ruptura = "ruptura"
+        self.rankvarabs = "rankvarabs"
+        self.rankvartot = "rankvartot"
+        self.media = 'media'
+        self.desvio = 'desvio'
+        self.indice_variacion = 'indice_variacion'
 
         self.types = {}
         self.types[self.material] = 'string'
@@ -54,6 +59,12 @@ class Lang:
         self.types[self.custo] = "double"
         self.types[self.perda] = "double"
         self.types[self.ruptura] = "short"
+
+        self.types[self.rankvarabs] = "double"
+        self.types[self.rankvartot] = "double"
+        self.types[self.media] = 'double'
+        self.types[self.desvio] = 'double'
+        self.types[self.indice_variacion] = 'double'
 
     def get_fieldtype(self, field):
         return self.types[field]

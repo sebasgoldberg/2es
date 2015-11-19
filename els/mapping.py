@@ -36,3 +36,21 @@ ruptura.add(L.perda)
 ruptura.save('./ruptura/mapping.json')
 
 
+precios = MappingFileGenerator()
+precios.add(L.loja)
+precios.add(L.secao)
+precios.add(L.material)
+precios.add(L.matid)
+precios.add(L.matid_com_um)
+precios.add(L.descricao_material)
+precios.add(L.descricao_secao)
+precios.add(L.data)
+precios.add(L.matid)
+precios.add(L.rankvarabs)
+precios.add(L.rankvartot)
+precios.add(L.media)
+precios.add(L.desvio)
+precios.add(L.indice_variacion)
+
+precios.save('./precios/mapping.json')
+

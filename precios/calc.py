@@ -147,39 +147,82 @@ def calc(desde, hasta, iv_tienda=None):
         for material, unidades in materiales.items():
             for unidad, fechas in unidades.items():
                 for fecha, (tipoCondicion, importe, moneda) in fechas.items():
+
                     fecha_anterior = fecha - TD(days=1)
+
+                    rankvartot = 0
+                    rankvarabs = 0
+
                     if fecha_anterior in fechas:
-
-
                         _ ,  importeAnterior, _ = fechas[fecha_anterior]
                         if importeAnterior <> 0 and importe <> 0:
                             variacion = importe - importeAnterior
                             indice = 1 + variacion / float(importeAnterior)
                             rankvartot = log(indice,2)
                             rankvarabs = abs(rankvartot)
-                        else:
-                            rankvartot = 0
-                            rankvarabs = 0
-
+                    
                     cur.execute(
-                        """insert into precio_dia
-                            (tienda, material, unidadMedida, fecha, tipoCondicion, precio, moneda, rankvartot, rankvarabs)
-                            values
-                            (%(tienda)s, %(material)s, %(unidadMedida)s, %(fecha)s, %(tipoCondicion)s, %(precio)s, %(moneda)s, %(rankvartot)s, %(rankvarabs)s)""",
-                        {"tienda": tienda,
+                        """
+                        select tienda
+                        from precio_dia
+                        where
+                            tienda = %(tienda)s and
+                            material = %(material)s and
+                            unidadMedida = %(unidadMedida)s and
+                            fecha = %(fecha)s
+                            """,{
+                            "tienda": tienda,
                             "material": material,
                             "unidadMedida": unidad,
                             "fecha": fecha,
-                            "tipoCondicion": tipoCondicion,
-                            "precio": importe,
-                            "moneda": moneda,
-                            "rankvarabs": rankvarabs,
-                            "rankvartot": rankvartot})
+                            })
 
-                conn.commit()
+                    rows = cur.fetchall()
+
+                    if len(rows) == 0:
+                        cur.execute(
+                            """insert into precio_dia
+                                (tienda, material, unidadMedida, fecha, tipoCondicion, precio, moneda, rankvartot, rankvarabs)
+                                values
+                                (%(tienda)s, %(material)s, %(unidadMedida)s, %(fecha)s, %(tipoCondicion)s, %(precio)s, %(moneda)s, %(rankvartot)s, %(rankvarabs)s)""",
+                            {"tienda": tienda,
+                                "material": material,
+                                "unidadMedida": unidad,
+                                "fecha": fecha,
+                                "tipoCondicion": tipoCondicion,
+                                "precio": importe,
+                                "moneda": moneda,
+                                "rankvarabs": rankvarabs,
+                                "rankvartot": rankvartot})
+                    else:
+                        cur.execute(
+                            """update precio_dia
+                               set
+                                tipoCondicion = %(tipoCondicion)s,
+                                precio = %(precio)s,
+                                moneda = %(moneda)s,
+                                rankvartot = %(rankvartot)s,
+                                rankvarabs = %(rankvarabs)s
+                                where
+                                    tienda = %(tienda)s and
+                                    material = %(material)s and
+                                    unidadMedida = %(unidadMedida)s and
+                                    fecha = %(fecha)s
+                            """,
+                            {"tienda": tienda,
+                                "material": material,
+                                "unidadMedida": unidad,
+                                "fecha": fecha,
+                                "tipoCondicion": tipoCondicion,
+                                "precio": importe,
+                                "moneda": moneda,
+                                "rankvarabs": rankvarabs,
+                                "rankvartot": rankvartot})
+
+                    conn.commit()
 
 fecha_hasta = date(2015,11,12)
-fecha_desde = fecha_hasta - TD(days=30)
+fecha_desde = fecha_hasta - TD(days=5)
 
 if len(sys.argv) > 1:
   for tienda in sys.argv[1:]:
