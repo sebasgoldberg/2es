@@ -32,6 +32,8 @@ class Lang:
         self.venda_liquida = "venda_liquida"
         self.quantidade = "quantidade"
         self.custo = "custo"
+        self.perda = "perda"
+        self.ruptura = "ruptura"
 
         self.types = {}
         self.types[self.material] = 'string'
@@ -50,6 +52,8 @@ class Lang:
         self.types[self.venda_liquida] = "double"
         self.types[self.quantidade] = "double"
         self.types[self.custo] = "double"
+        self.types[self.perda] = "double"
+        self.types[self.ruptura] = "short"
 
     def get_fieldtype(self, field):
         return self.types[field]

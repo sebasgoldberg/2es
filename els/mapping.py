@@ -20,3 +20,19 @@ venda.add(L.descricao_secao)
 venda.add(L.data)
 
 venda.save('./venda/mapping.json')
+
+
+ruptura = MappingFileGenerator()
+ruptura.add(L.loja)
+ruptura.add(L.secao)
+ruptura.add(L.material)
+ruptura.add(L.matid)
+ruptura.add(L.descricao_material)
+ruptura.add(L.descricao_secao)
+ruptura.add(L.data)
+ruptura.add(L.ruptura)
+ruptura.add(L.perda)
+
+ruptura.save('./ruptura/mapping.json')
+
+

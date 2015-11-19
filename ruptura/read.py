@@ -42,7 +42,13 @@ TYPE = 'ruptura'
 FILE_NAME_PREFIX = 'ruptura'
 
 from els.utils import ElasticFilesGenerator
+from bd.materiales import Materiales
+from bd.secciones import Secciones
+from els.lang import Lang
 
+materiales = Materiales.get_instance()
+secciones = Secciones.get_instance()
+L = Lang.get_instance()
 
 class NoDataRecordException(Exception):
     pass
@@ -53,13 +59,15 @@ def parse(line):
         raise NoDataRecordException(u'Registro de datos no encontrado')
     for i in range(len(register)):
         register[i] = register[i].strip()
-    return ({"fornecedor": register[FORNECEDOR],
-        "setor": register[SETOR],
-        "loja": register[LOJA],
-        "uf_loja": register[UF_LOJA],
-        "material": register[ITEM],
-        "descricao_mat": register[DESCRICAO_PRODUTO],
-        "venda_ultimos_90_dias": float(register[VENDA_ULTIMOS_90_DIAS].strip('"').replace('.','').replace(',','.')), })
+    return ({
+        #"fornecedor": register[FORNECEDOR],
+        #"setor": register[SETOR],
+        L.loja: register[LOJA],
+        #"uf_loja": register[UF_LOJA],
+        L.material: register[ITEM],
+        L.descricao_material: register[DESCRICAO_PRODUTO],
+        "venda_ultimos_90_dias": float(register[VENDA_ULTIMOS_90_DIAS].strip('"').replace('.','').replace(',','.')), 
+        })
 
 
 def read(filename):
@@ -82,13 +90,15 @@ def read(filename):
             line = line.decode("utf8","replace")
             try:
                 register = parse(line)
-                register['data'] = data
-                register['ruptura'] = 1
-                register['perda_estimada_semana'] = - ( register['venda_ultimos_90_dias'] * 7 ) / 90 
-                register['perda'] = - register['venda_ultimos_90_dias'] / 90 
-                register['matid'] = '%s%s' % (register['loja'], register['material'])
+                register[L.data] = data
+                register[L.ruptura] = 1
+                register[L.perda] = - register['venda_ultimos_90_dias'] / 90 
+                register[L.matid] = '%s%s' % (register[L.loja], register[L.material])
+                register[L.secao] = materiales.get_seccion(register[L.material])
+                register[L.descricao_secao] = secciones.get_descripcion(register[L.secao])
                 register.pop('venda_ultimos_90_dias')
-                efg.add(register, '%s%s' % (register['matid'], register['data']))
+
+                efg.add(register, '%s%s' % (register[L.matid], register[L.data]))
 
             except NoDataRecordException:
                 pass
