@@ -1,0 +1,46 @@
+{
+    "properties": {
+        "data": {
+            "format": "yyyy-MM-dd HH:mm:ss", 
+            "type": "date"
+        }, 
+        "descricao_material": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "descricao_secao": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "importe": {
+            "type": "double"
+        }, 
+        "loja": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "material": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "matid": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "quantidade": {
+            "type": "double"
+        }, 
+        "secao": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "tipo_movimento": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "unidade_medida": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }
+    }
+}

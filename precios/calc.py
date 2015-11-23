@@ -221,8 +221,9 @@ def calc(desde, hasta, iv_tienda=None):
 
                     conn.commit()
 
-fecha_hasta = date(2015,11,12)
+fecha_hasta = date(2015,11,23)
 fecha_desde = fecha_hasta - TD(days=5)
+fecha_desde = date(2015,07,01)
 
 if len(sys.argv) > 1:
   for tienda in sys.argv[1:]:

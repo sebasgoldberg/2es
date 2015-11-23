@@ -90,6 +90,8 @@ def read(filename):
             line = line.decode("utf8","replace")
             try:
                 register = parse(line)
+                if register[L.loja][0] <> 'B':
+                    register[L.loja] = 'B' + register[L.loja]
                 register[L.data] = data
                 register[L.ruptura] = 1
                 register[L.perda] = - register['venda_ultimos_90_dias'] / 90 
@@ -98,7 +100,7 @@ def read(filename):
                 register[L.descricao_secao] = secciones.get_descripcion(register[L.secao])
                 register.pop('venda_ultimos_90_dias')
 
-                efg.add(register, '%s%s' % (register[L.matid], register[L.data]))
+                efg.add(register, "%s%s" % (register[L.matid], str(register[L.data][0:10]).replace('-','')))
 
             except NoDataRecordException:
                 pass

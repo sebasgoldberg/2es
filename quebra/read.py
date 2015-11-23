@@ -6,7 +6,6 @@ import psycopg2
 import sys
 import datetime
 import json
-import tz
 from els.lang import Lang
 from bd.materiales import Materiales
 from bd.secciones import Secciones
@@ -16,29 +15,26 @@ L=Lang.get_instance()
 materiales = Materiales()
 secciones = Secciones()
 
-#"";"";"";"";"";"";"";"Venda Bruta Atual";"Venda Líquida Atual";"Quantidade UMB Atual";"Custo Atual";"Margem Líquida Atual";"Impostos Totais"
-#"Loja";"Dia";"Organização de Vendas";"Organização de Vendas";"Material";"Material";"[BI] Seçao";"BRL";"BRL";"";"BRL";"%";"BRL"
-#"B503";"01.10.2015";"4002";"BR Bretas";"502";"CESTA BASICA MAXIMA 3";"CESTAS BASICA/NATALINA";"36";"26";"1";"35";"-35,3";"10"
+#"";"";"";"";"";"";"";"Estoque";"Estoque UMB";"Quantidade de Estoque"
+#"Loja";"Loja";"Dia";"Material";"Material";"Tipo Movimento";"";"BRL";"";""
+#"B612";"B612 CESARIO ALVIM";"02.07.2015";"273874";"CREME DENT COLGATE TOTAL MINT 90G";"Z21";"Z21";"-3,85";"-1 UN";"-1,00"
 TIENDA = 0
-DIA = 1
-ORGANIZACION_VENTA = 2
-ORGANIZACION_VENTA_DESCRIPCION = 3
-MATERIAL = 4
-MATERIAL_DESCRIPCION = 5
-SECCION = 6
-VENTA_BRUTA = 7
-VENTA_LIQUIDA = 8
+TIENDA_DESCRIPCION = 1
+DIA = 2
+MATERIAL = 3
+MATERIAL_DESCRIPCION = 4
+TIPO_MOVIMIENTO = 5
+TIPO_MOVIMIENTO_DESCRIPCION = 6
+IMPORTE = 7
+CANTIDAD_Y_UN = 8
 CANTIDAD = 9
-COSTO = 10
-PORCENTAJE_MARGEN = 11
-IMPUESTOS = 12
 
 class NoDataRecordException(Exception):
     pass
 
 def parse(line):
     register = line.split(';')
-    if len(register) < 13:
+    if len(register) < 10:
         raise NoDataRecordException(u'Registro de datos no encontrado')
     for i in range(len(register)):
         register[i] = register[i].strip()
@@ -48,25 +44,21 @@ def parse(line):
         raise NoDataRecordException(u"El registro de cabecera no es un registro de datos")
     if register[0] == "Loja":
         raise NoDataRecordException(u"El registro de totales no es un registro de datos")
+    cantidad, unidad_medida = register[CANTIDAD_Y_UN].split(' ')
     return ({
         L.loja: register[TIENDA],
         L.data: datetime.datetime.strptime(register[DIA],"%d.%m.%Y").replace(hour=12).strftime("%Y-%m-%d %H:%M:%S"),
-        #"organizacion_register": register[ORGANIZACION_VENTA],
-        #"organizacion_register_descripcion": register[ORGANIZACION_VENTA_DESCRIPCION],
         L.material: register[MATERIAL],
         L.descricao_material: register[MATERIAL_DESCRIPCION],
-        L.secao: register[SECCION],
-        L.venda_bruta: float(register[VENTA_BRUTA].replace('.','').replace(',','.')),
-        L.venda_liquida: float(register[VENTA_LIQUIDA].replace('.','').replace(',','.')),
-        L.quantidade: float(register[CANTIDAD].replace('.','').replace(',','.')),
-        L.custo: float(register[COSTO].replace('.','').replace(',','.')),
-        #"porcentaje_margen": float(register[PORCENTAJE_MARGEN].replace('.','').replace(',','.'))/100,
-        #"impuestos": float(register[IMPUESTOS].replace('.','').replace(',','.')),
+        L.tipo_movimento: register[TIPO_MOVIMIENTO],
+        L.importe: float(register[IMPORTE].replace('.','').replace(',','.')),
+        L.quantidade: float(cantidad.replace('.','').replace(',','.')),
+        L.unidade_medida:unidad_medida, 
         })
 
-INDEX = 'venda'
-TYPE = 'venda'
-FILE_NAME_PREFIX = 'venda'
+INDEX = 'quebra'
+TYPE = 'quebra'
+FILE_NAME_PREFIX = 'quebra'
 
 def read(filename):
 
@@ -85,7 +77,7 @@ def read(filename):
                 matid = "%s%s" % (register[L.loja], register[L.material])
                 register.update({L.matid: matid})
 
-                efg.add(register, "%s%s" % (matid, str(register[L.data][0:10]).replace('-','')))
+                efg.add(register, "%s%s%s" % (matid, register[L.tipo_movimento], str(register[L.data][0:10]).replace('-','')))
 
 
             except NoDataRecordException:

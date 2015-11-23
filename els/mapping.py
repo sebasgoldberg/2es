@@ -54,3 +54,32 @@ precios.add(L.indice_variacion)
 
 precios.save('./precios/mapping.json')
 
+quebra = MappingFileGenerator()
+quebra.add(L.matid)
+quebra.add(L.loja)
+quebra.add(L.secao)
+quebra.add(L.descricao_secao)
+quebra.add(L.material)
+quebra.add(L.descricao_material)
+quebra.add(L.unidade_medida)
+quebra.add(L.tipo_movimento)
+quebra.add(L.quantidade)
+quebra.add(L.data)
+quebra.add(L.importe)
+
+quebra.save('./quebra/mapping.json')
+
+
+
+windows_clients = MappingFileGenerator()
+windows_clients.add(L.estado_antivirus)
+windows_clients.add(L.nome_maquina)
+windows_clients.add(L.auto_gestao_senha)
+windows_clients.add(L.lync)
+windows_clients.add(L.data)
+windows_clients.add(L.altiris)
+windows_clients.save('./mac/mapping.json')
+
+
+
+

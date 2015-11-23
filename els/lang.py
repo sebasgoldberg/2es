@@ -27,6 +27,7 @@ class Lang:
         #self.fornecedor = 'fornecedor'
         self.secao = 'secao'
         self.descricao_secao = 'descricao_secao'
+        self.tipo_movimento = 'tipo_movimento'
 
         self.venda_bruta = "venda_bruta"
         self.venda_liquida = "venda_liquida"
@@ -39,6 +40,13 @@ class Lang:
         self.media = 'media'
         self.desvio = 'desvio'
         self.indice_variacion = 'indice_variacion'
+        self.importe = 'importe'
+
+        self.estado_antivirus = "estado_antivirus"
+        self.nome_maquina = "nome_maquina"
+        self.auto_gestao_senha = "auto_gestao_senha"
+        self.lync = "lync"
+        self.altiris = "altiris"
 
         self.types = {}
         self.types[self.material] = 'string'
@@ -52,6 +60,7 @@ class Lang:
         self.types[self.tipo_condicao] = 'string'
         self.types[self.secao] = 'string'
         self.types[self.descricao_secao] = 'string'
+        self.types[self.tipo_movimento] = 'string'
 
         self.types[self.venda_bruta] = "double"
         self.types[self.venda_liquida] = "double"
@@ -65,6 +74,13 @@ class Lang:
         self.types[self.media] = 'double'
         self.types[self.desvio] = 'double'
         self.types[self.indice_variacion] = 'double'
+        self.types[self.importe] = 'double'
+
+        self.types[self.estado_antivirus] = "short"
+        self.types[self.nome_maquina] = "string"
+        self.types[self.auto_gestao_senha] = "short"
+        self.types[self.lync] = "short"
+        self.types[self.altiris] = "short"
 
     def get_fieldtype(self, field):
         return self.types[field]

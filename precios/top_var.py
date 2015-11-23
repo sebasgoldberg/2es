@@ -14,8 +14,6 @@ from bd.materiales import Materiales
 from bd.secciones import Secciones
 from els.utils import ElasticFilesGenerator
 
-from venda import tz
-
 #es = Elasticsearch('http://evoca:9200')
 
 DESCRIPCION = 0
@@ -114,7 +112,7 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
             L.material: material,
             L.unidade_medida: unidadMedida.strip(),
             L.data: datetime.datetime(fecha.year,
-                fecha.month,fecha.day,12).replace(tzinfo=tz.brst).astimezone(tz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                fecha.month,fecha.day,12).strftime("%Y-%m-%d %H:%M:%S"),
             L.preco: precio,
             L.tipo_condicao: tipoCondicionPrecioDia,
             L.rankvarabs: rankvarabs,
@@ -138,11 +136,12 @@ def top_variance(desde=date.today()-timedelta(days=30),hasta=date.today(), canti
         matid = "%s%s" % (register[L.loja], register[L.material])
         register[L.matid] = matid
 
-        efg.add(register, "%s%s" % (matid_com_um, str(register[L.data].split(' ')[0]).replace('-','')))
+        efg.add(register, "%s%s" % (matid_com_um, str(register[L.data][0:10]).replace('-','')))
 
 
-fecha_hasta = date(2015,11,12)
-fecha_desde = fecha_hasta - timedelta(days=2)
+fecha_hasta = date(2015,11,23)
+fecha_desde = fecha_hasta - timedelta(days=5)
+fecha_desde = date(2015,07,01)
 
 tienda = None
 if len(sys.argv) > 1:
