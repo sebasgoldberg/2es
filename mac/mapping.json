@@ -13,12 +13,33 @@
         "estado_antivirus": {
             "type": "short"
         }, 
+        "ip": {
+            "type": "ip"
+        }, 
+        "local": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
         "lync": {
             "type": "short"
         }, 
         "nome_maquina": {
             "index": "not_analyzed", 
             "type": "string"
+        }, 
+        "osArch": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "osVersion": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "pcA": {
+            "type": "short"
+        }, 
+        "status": {
+            "type": "short"
         }
     }
 }

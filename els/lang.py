@@ -47,8 +47,14 @@ class Lang:
         self.auto_gestao_senha = "auto_gestao_senha"
         self.lync = "lync"
         self.altiris = "altiris"
+        self.osArch = "osArch"
+        self.osVersion = "osVersion"
+        self.status = "status"
+        self.ip = "ip"
+        self.local = "local"
+        self.pcA = "pcA"
 
-        self.types = {}
+	self.types = {}
         self.types[self.material] = 'string'
         self.types[self.loja] = 'string'
         self.types[self.data] = 'date'
@@ -81,6 +87,12 @@ class Lang:
         self.types[self.auto_gestao_senha] = "short"
         self.types[self.lync] = "short"
         self.types[self.altiris] = "short"
+        self.types[self.osArch] = "string"
+        self.types[self.osVersion] = "string"
+        self.types[self.status] = "short"
+        self.types[self.ip] = "ip"
+        self.types[self.local] = "string"
+        self.types[self.pcA] = "short"
 
     def get_fieldtype(self, field):
         return self.types[field]

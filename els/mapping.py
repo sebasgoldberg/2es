@@ -78,6 +78,12 @@ windows_clients.add(L.auto_gestao_senha)
 windows_clients.add(L.lync)
 windows_clients.add(L.data)
 windows_clients.add(L.altiris)
+windows_clients.add(L.osArch)
+windows_clients.add(L.osVersion)
+windows_clients.add(L.status)
+windows_clients.add(L.ip)
+windows_clients.add(L.local)
+windows_clients.add(L.pcA)
 windows_clients.save('./mac/mapping.json')
 
 
