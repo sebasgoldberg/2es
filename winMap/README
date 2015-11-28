@@ -1,0 +1,14 @@
+version 0.1
+licence: same kernel - GNU
+
+nmap scan for 3389 and 445 open ports
+
+smbclient put one .bat script inside c:\temp of up machines
+
+winexe (samba4) login machine, executing .bat script, and pass
+the result to json struct
+
+json has been agregated inside elasticsearch 
+
+kibana show results
+
