@@ -54,7 +54,11 @@ class Lang:
         self.local = "local"
         self.pcA = "pcA"
 
-	self.types = {}
+        self.quantidade_vendida = "quantidade_vendida"
+        self.quantidade_quebra = "quantidade_quebra"
+        self.importe_quebra = "importe_quebra"
+
+        self.types = {}
         self.types[self.material] = 'string'
         self.types[self.loja] = 'string'
         self.types[self.data] = 'date'
@@ -93,6 +97,10 @@ class Lang:
         self.types[self.ip] = "ip"
         self.types[self.local] = "string"
         self.types[self.pcA] = "short"
+
+        self.types[self.quantidade_vendida] = "double"
+        self.types[self.quantidade_quebra] = "double"
+        self.types[self.importe_quebra] = "double"
 
     def get_fieldtype(self, field):
         return self.types[field]

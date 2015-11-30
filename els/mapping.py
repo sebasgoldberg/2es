@@ -89,3 +89,30 @@ windows_clients.save('./mac/mapping.json')
 
 
 
+retail = MappingFileGenerator()
+retail.add(L.loja)
+retail.add(L.secao)
+retail.add(L.descricao_secao)
+retail.add(L.material)
+retail.add(L.descricao_material)
+retail.add(L.matid)
+
+retail.add(L.data)
+
+retail.add(L.venda_bruta)
+retail.add(L.venda_liquida)
+retail.add(L.custo)
+retail.add(L.quantidade_vendida)
+
+
+retail.add(L.ruptura)
+retail.add(L.perda)
+
+retail.add(L.unidade_medida)
+retail.add(L.tipo_movimento)
+retail.add(L.quantidade_quebra)
+retail.add(L.importe_quebra)
+
+retail.save('./retail/mapping.json')
+
+
