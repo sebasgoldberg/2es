@@ -1,7 +1,10 @@
 data/*
 results/*
+a-procesar/*
+procesados/*
 *~*
 *.pyc
+*.log
 precios*.json
 usrtrx*.json
 venta*.json
