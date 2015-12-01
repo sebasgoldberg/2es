@@ -54,7 +54,23 @@ if [ "$WSTATUS" == 1 ]; then
     else 
 	OSV=$(cat /tmp/smbclient.tmp$$ |grep Doma | awk -F'=' '{ print $3 }')
 
-	FULL=$(winexe -U $WUSER_WPASS //$WHOST 'cmd /c "c:\Temp\winmap.bat" ')
+	FULL=$(winexe -U $WUSER_WPASS //$WHOST 'cmd /c "c:\Temp\winmap.bat" ') &
+
+    WINEXE_PID="$!"
+    FINISH_WINEXE=0
+    WINEXE_TIME=0
+    WINEXE_TIMEOUT=10
+    while [ FINISH_WINEXE -eq 0 ]; do
+        if [ $(ps $WINEXE_PID | wc -l) -eq 2 ]; then
+            FINISH_WINEXE=1
+        else
+            sleep 1
+            WINEXE_TIME="$(echo "$WINEXE_TIME+1" | bc )"
+            if [ $WINEXE_TIME -gt $WINEXE_TIMEOUT ]; then
+                FINISH_WINEXE=1
+            fi
+        fi
+    done
 
 	if echo "$FULL" | grep 'Arch: 64' ; then
 	    OSA=64
