@@ -92,7 +92,7 @@ procesar(){
 
 }
 
-erify_exists_or_create_path "./$PROCESADOS"
+verify_exists_or_create_path "./$PROCESADOS"
 
 while true
 do
