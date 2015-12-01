@@ -33,9 +33,6 @@
         "perda": {
             "type": "double"
         }, 
-        "quantidade_quebra": {
-            "type": "double"
-        }, 
         "quantidade_vendida": {
             "type": "double"
         }, 
@@ -43,14 +40,6 @@
             "type": "short"
         }, 
         "secao": {
-            "index": "not_analyzed", 
-            "type": "string"
-        }, 
-        "tipo_movimento": {
-            "index": "not_analyzed", 
-            "type": "string"
-        }, 
-        "unidade_medida": {
             "index": "not_analyzed", 
             "type": "string"
         }, 

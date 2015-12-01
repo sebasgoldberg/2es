@@ -7,12 +7,13 @@ import json
 from els.lang import Lang
 from els.utils import ElasticFilesGenerator
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import scan
 
 L=Lang.get_instance()
 
 INDEX = 'retail'
 TYPE = 'retail'
-FILE_NAME_PREFIX = 'retail'
+FILE_NAME_PREFIX = '../retail'
 
 def read(data):
 
@@ -22,16 +23,21 @@ def read(data):
     data_desde = datetime.datetime.combine(data,datetime.datetime.min.time())
     data_ate = datetime.datetime.combine(data,datetime.datetime.max.time())
 
-    res = es.search(index="venda", body={
-        "range" : {
-            "data" : {
-                "gte" : data_desde,
-                "lte" : data_ate,
-                "boost" : 2.0
-                } } }) 
+    #res = es.search(index="venda", body={"query": {"match_all": {}}}, search_type='scan')
+
+    res = scan(es, {"query": {"match_all": {}}}, index="venda")
+
+    for i in res:
+        print i['_id']
+        print i['_source']
+
+    """
+    print("Got %d Hits:" % res['hits']['total'])
 
     for hit in res['hits']['hits']:
         register = hit['_source']
-        efg.add(register, "%s%s" % (register[L.matid], str(register[L.data][0:10]).replace('-','')))
+        #efg.add(register, "%s%s" % (register[L.matid], str(register[L.data][0:10]).replace('-','')))
+        print register
+    """
 
 read(datetime.date(2015,11,25))

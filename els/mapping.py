@@ -99,18 +99,17 @@ retail.add(L.matid)
 
 retail.add(L.data)
 
+# venda
 retail.add(L.venda_bruta)
 retail.add(L.venda_liquida)
 retail.add(L.custo)
 retail.add(L.quantidade_vendida)
 
-
+# ruptura
 retail.add(L.ruptura)
 retail.add(L.perda)
 
-retail.add(L.unidade_medida)
-retail.add(L.tipo_movimento)
-retail.add(L.quantidade_quebra)
+# quebra
 retail.add(L.importe_quebra)
 
 retail.save('./retail/mapping.json')
