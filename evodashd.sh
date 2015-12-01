@@ -12,13 +12,13 @@ log(){
 
 verify_exists_or_create_path(){
 
-    PATH="$1"
+    FOLDER_PATH="$1"
 
-    if [ ! -d "$PATH" ]; then
-        /bin/mkdir -p "$PATH"
+    if [ ! -d "$FOLDER_PATH" ]; then
+        mkdir -p "$FOLDER_PATH"
 
         if [ $? -ne 0 ]; then
-            log "ERROR: " /bin/mkdir -p "$PATH"
+            log "ERROR: " /bin/mkdir -p "$FOLDER_PATH"
             exit 1
         fi
     fi
@@ -92,7 +92,7 @@ procesar(){
 
 }
 
-verify_exists_or_create_path "./$PROCESADOS"
+erify_exists_or_create_path "./$PROCESADOS"
 
 while true
 do
