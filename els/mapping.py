@@ -9,15 +9,15 @@ L = Lang.get_instance()
 venda = MappingFileGenerator()
 venda.add(L.loja)
 venda.add(L.secao)
-venda.add(L.custo)
 venda.add(L.material)
-venda.add(L.venda_liquida)
 venda.add(L.matid)
 venda.add(L.descricao_material)
+venda.add(L.descricao_secao)
+
 venda.add(L.venda_bruta)
 venda.add(L.quantidade)
-venda.add(L.descricao_secao)
-venda.add(L.data)
+venda.add(L.custo)
+venda.add(L.venda_liquida)
 
 venda.save('./venda/mapping.json')
 
@@ -87,5 +87,9 @@ windows_clients.add(L.pcA)
 windows_clients.save('./mac/mapping.json')
 
 
+
+from retail.mapping import RetailMapping
+retail = RetailMapping()
+retail.save('./retail/mapping.json')
 
 
