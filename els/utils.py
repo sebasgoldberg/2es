@@ -66,3 +66,14 @@ class MappingFileGenerator:
     def save(self, filepath):
         with open(filepath,"w") as f:
             json.dump(self.mapping, f, sort_keys=True, indent=4)
+
+    def create_empty_register(self):
+        register = {}
+        for field, field_properties in self.mapping['properties'].iteritems():
+            fieldtype = field_properties['type']
+            if fieldtype == 'double' or fieldtype == 'short':
+                register[field] = 0
+            else:
+                register[field] = None
+        return register
+
