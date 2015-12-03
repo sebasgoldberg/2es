@@ -66,11 +66,10 @@ def parse(line):
 
 INDEX = 'venda'
 TYPE = 'venda'
-FILE_NAME_PREFIX = 'venda'
 
 def read(filename):
 
-    efg = ElasticFilesGenerator(INDEX, TYPE, FILE_NAME_PREFIX)
+    efg = ElasticFilesGenerator(INDEX, TYPE, filename)
 
     with open(filename, 'r') as f:
         for line in f:

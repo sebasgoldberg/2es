@@ -39,7 +39,6 @@ VENDA_ULTIMOS_90_DIAS = 9
 
 INDEX = 'ruptura'
 TYPE = 'ruptura'
-FILE_NAME_PREFIX = 'ruptura'
 
 from els.utils import ElasticFilesGenerator
 from bd.materiales import Materiales
@@ -77,7 +76,7 @@ def read(filename):
     data = datetime.datetime(
              int(tail[0:4]), int(tail[5:7]), int(tail[8:10]), 12
              ) - datetime.timedelta(days=1)
-    efg = ElasticFilesGenerator(INDEX,TYPE,'%s.%s' % (FILE_NAME_PREFIX, str(data.date())))
+    efg = ElasticFilesGenerator(INDEX,TYPE,filename)
     data = str(data)
 
     with open(filename, 'r') as f:

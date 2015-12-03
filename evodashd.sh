@@ -10,6 +10,14 @@ log(){
     echo "[$(date --rfc-3339=seconds)]" "[$@]" >> ./evodashd.log
 }
 
+info(){
+    log "INFO: " $@
+}
+
+error(){
+    log "ERROR: " $@
+}
+
 verify_exists_or_create_path(){
 
     FOLDER_PATH="$1"
@@ -36,6 +44,7 @@ procesar_modelo(){
 
     for i in $(/usr/bin/find "$A_PROCESAR_PATH/" -type f)
     do
+        info "$EXEC_PATH/prepare-files.sh" "$i"
         "$EXEC_PATH/prepare-files.sh" "$i"
 
         if [ $? -ne 0 ]; then
@@ -47,6 +56,7 @@ procesar_modelo(){
     for i in $(/usr/bin/find "$A_PROCESAR_PATH/" -type f)
     do
 
+        info "$EXEC_PATH/read.py" "$i"
         "$EXEC_PATH/read.py" "$i"
 
         if [ $? -ne 0 ]; then
@@ -72,6 +82,7 @@ procesar(){
 
     for i in $(/usr/bin/find . -maxdepth 1 -name "*.json"); do
 
+        info ./els/upload.sh "$i"
         ./els/upload.sh "$i"
 
         if [ $? -ne 0 ]; then
@@ -82,6 +93,7 @@ procesar(){
     done
 
     for i in $(/usr/bin/find . -maxdepth 1 -name "*.json"); do
+        info /bin/rm "$i"
         /bin/rm "$i"
 
         if [ $? -ne 0 ]; then

@@ -5,6 +5,7 @@
 import json
 
 from els.lang import Lang
+import ntpath
 
 L = Lang.get_instance()
 
@@ -22,7 +23,9 @@ class ElasticFilesGenerator:
         self.CANT_REGS_FILE=50000
         self.nreg=0
         self.fsalida=None
-        self.file_name_prefix = iv_file_name_prefix
+
+        head, tail = ntpath.split(iv_file_name_prefix)
+        self.file_name_prefix = tail
 
     def __del__(self):
         if self.fsalida is not None:
