@@ -136,5 +136,5 @@ def read(filename):
                 #print(line)
 
 
-for f in sys.argv:
+for f in sys.argv[1:]:
     read(f)
