@@ -48,6 +48,7 @@ from els.lang import Lang
 materiales = Materiales.get_instance()
 secciones = Secciones.get_instance()
 L = Lang.get_instance()
+LOJAS_PADRINHOS = ["B503", "B514", "B555", "B612", "B634"]
 
 class NoDataRecordException(Exception):
     pass
@@ -91,6 +92,8 @@ def read(filename):
                 register = parse(line)
                 if register[L.loja][0] <> 'B':
                     register[L.loja] = 'B' + register[L.loja]
+                if register[L.loja] not in LOJAS_PADRINHOS:
+                    continue
                 register[L.data] = data
                 register[L.ruptura] = 1
                 register[L.perda] = - register['venda_ultimos_90_dias'] / 90 

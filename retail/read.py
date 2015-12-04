@@ -20,7 +20,7 @@ TYPE = 'retail'
 FILE_NAME_PREFIX = 'retail/retail'
 
 es = Elasticsearch(['10.151.1.21',])
-efg = ElasticFilesGenerator(INDEX, TYPE, FILE_NAME_PREFIX)
+efg = ElasticFilesGenerator(INDEX, TYPE, FILE_NAME_PREFIX, preserve_path=True)
 
 def retail_id(x):
     return "%s%s" % (x['_source'][L.matid], str(x['_source'][L.data][0:10]).replace('-',''))
