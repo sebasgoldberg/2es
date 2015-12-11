@@ -43,7 +43,7 @@ class ElasticFilesGenerator:
     def do_file_control(self):
 
         if (self.nreg % self.CANT_REGS_FILE) == 0:
-            nfile = self.nreg / self.CANT_REGS_FILE
+            nfile = int(self.nreg / self.CANT_REGS_FILE)
             if self.fsalida is not None:
                 self.fsalida.close()
             self.fsalida = open("%s.%s.json" % (self.file_name_prefix, str(nfile)),"w")

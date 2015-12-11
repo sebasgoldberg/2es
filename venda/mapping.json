@@ -3,10 +3,6 @@
         "custo": {
             "type": "double"
         }, 
-        "data": {
-            "format": "yyyy-MM-dd HH:mm:ss", 
-            "type": "date"
-        }, 
         "descricao_material": {
             "index": "not_analyzed", 
             "type": "string"

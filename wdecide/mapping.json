@@ -1,0 +1,12 @@
+{
+    "properties": {
+        "criteria": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "option": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }
+    }
+}

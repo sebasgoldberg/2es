@@ -6,6 +6,12 @@ from els.lang import Lang
 
 L = Lang.get_instance()
 
+wdecide = MappingFileGenerator()
+wdecide.add(L.option)
+wdecide.add(L.criteria)
+wdecide.save('./wdecide/mapping.json')
+
+
 venda = MappingFileGenerator()
 venda.add(L.loja)
 venda.add(L.secao)
