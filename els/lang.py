@@ -61,6 +61,11 @@ class Lang:
         self.option = "option"
         self.criteria = "criteria"
 
+        self.mail = "mail"
+        self.msExchRecipientTypeDetails  = "msExchRecipientTypeDetails" 
+        self.cn = "cn"
+        self.sAMAccountName = "sAMAccountName"
+
         self.types = {}
         self.types[self.material] = 'string'
         self.types[self.loja] = 'string'
@@ -107,6 +112,11 @@ class Lang:
 
         self.types[self.option] = "string"
         self.types[self.criteria] = "string"
+
+        self.types[self.mail] = "string"
+        self.types[self.msExchRecipientTypeDetails]  = "long" 
+        self.types[self.cn] = "string"
+        self.types[self.sAMAccountName] = "string"
 
     def get_fieldtype(self, field):
         return self.types[field]

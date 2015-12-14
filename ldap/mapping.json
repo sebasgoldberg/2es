@@ -1,0 +1,19 @@
+{
+    "properties": {
+        "cn": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "mail": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "msExchRecipientTypeDetails": {
+            "type": "long"
+        }, 
+        "sAMAccountName": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }
+    }
+}

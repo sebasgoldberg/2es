@@ -11,6 +11,12 @@ wdecide.add(L.option)
 wdecide.add(L.criteria)
 wdecide.save('./wdecide/mapping.json')
 
+ldap = MappingFileGenerator()
+ldap.add(L.mail)
+ldap.add(L.msExchRecipientTypeDetails)
+ldap.add(L.cn)
+ldap.add(L.sAMAccountName)
+ldap.save('./ldap/mapping.json')
 
 venda = MappingFileGenerator()
 venda.add(L.loja)
