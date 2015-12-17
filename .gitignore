@@ -9,7 +9,7 @@ precios*.json
 usrtrx*.json
 venta*.json
 venda*.json
-ruptura*.json
+*ruptura*.json
 quebra*.json
 mac*.json
 retail*.json
