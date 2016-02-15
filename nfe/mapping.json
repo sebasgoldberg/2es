@@ -1,0 +1,113 @@
+{
+    "properties": {
+        "centro": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "check_nfs": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "check_pedido": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "cnpj": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "consolidado_supply": {
+            "type": "short"
+        }, 
+        "data_criacao": {
+            "format": "yyyy-MM-dd HH:mm:ss", 
+            "type": "date"
+        }, 
+        "data_emissao": {
+            "format": "yyyy-MM-dd HH:mm:ss", 
+            "type": "date"
+        }, 
+        "dia": {
+            "type": "short"
+        }, 
+        "enviada_sap": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "erro_cadastro": {
+            "type": "short"
+        }, 
+        "erro_comercial": {
+            "type": "short"
+        }, 
+        "erro_custo": {
+            "type": "short"
+        }, 
+        "erro_custo_real": {
+            "type": "short"
+        }, 
+        "erro_embalagem": {
+            "type": "short"
+        }, 
+        "erro_fiscal": {
+            "type": "short"
+        }, 
+        "erro_material": {
+            "type": "short"
+        }, 
+        "erro_operacional": {
+            "type": "short"
+        }, 
+        "erro_quantidade": {
+            "type": "short"
+        }, 
+        "erro_remessa": {
+            "type": "short"
+        }, 
+        "fornecedor": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "horti": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "mes": {
+            "type": "short"
+        }, 
+        "nome_fantasia": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "nota": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "org_venda": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "pedido": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "semana": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "serie": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "tipo_centro": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "total_nota": {
+            "type": "double"
+        }, 
+        "total_produto": {
+            "type": "double"
+        }
+    }
+}

@@ -6,6 +6,10 @@
         "auto_gestao_senha": {
             "type": "short"
         }, 
+        "bandeira": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
         "data": {
             "format": "yyyy-MM-dd HH:mm:ss", 
             "type": "date"
@@ -16,9 +20,15 @@
         "ip": {
             "type": "ip"
         }, 
+        "lat_lon": {
+            "type": "geo_point"
+        }, 
         "local": {
             "index": "not_analyzed", 
             "type": "string"
+        }, 
+        "loja_critica": {
+            "type": "short"
         }, 
         "lync": {
             "type": "short"
@@ -38,8 +48,16 @@
         "pcA": {
             "type": "short"
         }, 
+        "regional": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
         "status": {
             "type": "short"
+        }, 
+        "tipo_loja": {
+            "index": "not_analyzed", 
+            "type": "string"
         }
     }
 }

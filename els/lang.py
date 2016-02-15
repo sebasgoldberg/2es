@@ -65,6 +65,43 @@ class Lang:
         self.msExchRecipientTypeDetails  = "msExchRecipientTypeDetails" 
         self.cn = "cn"
         self.sAMAccountName = "sAMAccountName"
+        self.bandeira = "bandeira"
+        self.regional = "regional"
+        self.loja_critica = "loja_critica"
+        self.tipo_loja = "tipo_loja"
+        self.lat_lon = "lat_lon"
+
+        self.nota = 'nota'
+        self.serie = 'serie'
+        self.cnpj = 'cnpj'
+        self.pedido = 'pedido'
+        self.fornecedor = 'fornecedor'
+        self.data_emissao = 'data_emissao'
+        self.data_criacao = 'data_criacao'
+        self.total_produto = 'total_produto'
+        self.total_nota = 'total_nota'
+        self.enviada_sap = 'enviada_sap'
+        self.centro = 'centro'
+        self.tipo_centro = 'tipo_centro'
+        self.org_venda = 'org_venda'
+        self.erro_remessa = 'erro_remessa'
+        self.erro_cadastro = 'erro_cadastro'
+        self.erro_comercial = 'erro_comercial'
+        self.erro_custo_real = 'erro_custo_real'
+        self.erro_embalagem = 'erro_embalagem'
+        self.erro_fiscal = 'erro_fiscal'
+        self.erro_material = 'erro_material'
+        self.erro_quantidade = 'erro_quantidade'
+        self.erro_operacional = 'erro_operacional'
+        self.erro_custo = 'erro_custo'
+        self.nome_fantasia = 'nome_fantasia'
+        self.dia = 'dia'
+        self.mes = 'mes'
+        self.semana = 'semana'
+        self.check_nfs = 'check_nfs'
+        self.check_pedido = 'check_pedido'
+        self.consolidado_supply = 'consolidado_supply'
+        self.horti = 'horti'
 
         self.types = {}
         self.types[self.material] = 'string'
@@ -117,6 +154,45 @@ class Lang:
         self.types[self.msExchRecipientTypeDetails]  = "long" 
         self.types[self.cn] = "string"
         self.types[self.sAMAccountName] = "string"
+
+        self.types[self.bandeira] = "string"
+        self.types[self.regional] = "string"
+        self.types[self.loja_critica] = "short"
+        self.types[self.tipo_loja] = "string"
+        self.types[self.lat_lon] = "geo_point"
+
+        self.types[self.nota] = 'string'
+        self.types[self.serie] = 'string'
+        self.types[self.cnpj] = 'string'
+        self.types[self.pedido] = 'string'
+        self.types[self.fornecedor] = 'string'
+        self.types[self.data_emissao] = 'date'
+        self.types[self.data_criacao] = 'date'
+        self.types[self.total_produto] = 'double'
+        self.types[self.total_nota] = 'double'
+        self.types[self.enviada_sap] = 'string'
+        self.types[self.centro] = 'string'
+        self.types[self.tipo_centro] = 'string'
+        self.types[self.org_venda] = 'string'
+        self.types[self.erro_remessa] = 'short'
+        self.types[self.erro_cadastro] = 'short'
+        self.types[self.erro_comercial] = 'short'
+        self.types[self.erro_custo_real] = 'short'
+        self.types[self.erro_embalagem] = 'short'
+        self.types[self.erro_fiscal] = 'short'
+        self.types[self.erro_material] = 'short'
+        self.types[self.erro_quantidade] = 'short'
+        self.types[self.erro_operacional] = 'short'
+        self.types[self.erro_custo] = 'short'
+        self.types[self.nome_fantasia] = 'string'
+        self.types[self.dia] = 'short'
+        self.types[self.mes] = 'short'
+        self.types[self.semana] = 'string'
+        self.types[self.check_nfs] = 'string'
+        self.types[self.check_pedido] = 'string'
+        self.types[self.consolidado_supply] = 'short'
+        self.types[self.horti] = 'string'
+
 
     def get_fieldtype(self, field):
         return self.types[field]
