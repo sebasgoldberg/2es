@@ -136,10 +136,21 @@ nfe.add(L.check_nfs)
 nfe.add(L.check_pedido)
 nfe.add(L.consolidado_supply)
 nfe.add(L.horti)
+nfe.add(L.tipo_erro)
+nfe.add(L.quan_erros)
 nfe.save('./nfe/mapping.json')
+
+clima = MappingFileGenerator()
+nfe.add(L.quan_erros)
+clima.add(L.pais)
+clima.add(L.visao)
+clima.add(L.conceito)
+clima.add(L.item)
+clima.add(L.evaluacao)
+clima.add(L.benchmark)
+clima.save('./clima/mapping.json')
 
 from retail.mapping import RetailMapping
 retail = RetailMapping()
 retail.save('./retail/mapping.json')
-
 

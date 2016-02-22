@@ -91,6 +91,9 @@
             "index": "not_analyzed", 
             "type": "string"
         }, 
+        "quan_erros": {
+            "type": "short"
+        }, 
         "semana": {
             "index": "not_analyzed", 
             "type": "string"
@@ -100,6 +103,10 @@
             "type": "string"
         }, 
         "tipo_centro": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "tipo_erro": {
             "index": "not_analyzed", 
             "type": "string"
         }, 

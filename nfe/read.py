@@ -97,6 +97,39 @@ def parse(line):
         })
 
 
+def add_tipo_erro(nfe):
+
+    nfe['tipo_erro'] = []
+
+    if nfe['erro_remessa'] == 1:
+        nfe['tipo_erro'].append('remessa')
+    if nfe['erro_cadastro'] == 1:
+        nfe['tipo_erro'].append('cadastro')
+    if nfe['erro_comercial'] == 1:
+        nfe['tipo_erro'].append('comercial')
+    if nfe['erro_custo_real'] == 1:
+        nfe['tipo_erro'].append('custo_real')
+    if nfe['erro_embalagem'] == 1:
+        nfe['tipo_erro'].append('embalagem')
+    if nfe['erro_fiscal'] == 1:
+        nfe['tipo_erro'].append('fiscal')
+    if nfe['erro_material'] == 1:
+        nfe['tipo_erro'].append('material')
+    if nfe['erro_quantidade'] == 1:
+        nfe['tipo_erro'].append('quantidade')
+    if nfe['erro_operacional'] == 1:
+        nfe['tipo_erro'].append('operacional')
+    if nfe['erro_custo'] == 1:
+        nfe['tipo_erro'].append('custo')
+
+
+def set_quan_erros(nfe):
+    if nfe['check_nfs'] == 'C/ Erro':
+        nfe['quan_erros'] = 1
+    else:
+        nfe['quan_erros'] = 0
+
+
 def read(filename):
 
     lineNum = 0
@@ -113,6 +146,8 @@ def read(filename):
                 nfe = parse(line)
                 nfe['data_emissao'] = str(nfe['data_emissao'])
                 nfe['data_criacao'] = str(nfe['data_criacao'])
+                add_tipo_erro(nfe)
+                set_quan_erros(nfe)
                 efg.add(nfe,'%(cnpj)s-%(serie)s-%(nota)s' % nfe)
 
             except NoDataRecordException:

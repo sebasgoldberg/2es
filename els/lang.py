@@ -102,6 +102,15 @@ class Lang:
         self.check_pedido = 'check_pedido'
         self.consolidado_supply = 'consolidado_supply'
         self.horti = 'horti'
+        self.tipo_erro = 'tipo_erro'
+        self.quan_erros = 'quan_erros'
+
+        self.pais = 'pais'
+        self.visao = 'visao'
+        self.conceito = 'conceito'
+        self.item = 'item'
+        self.evaluacao = 'evaluacao'
+        self.benchmark = 'benchmark'
 
         self.types = {}
         self.types[self.material] = 'string'
@@ -192,7 +201,15 @@ class Lang:
         self.types[self.check_pedido] = 'string'
         self.types[self.consolidado_supply] = 'short'
         self.types[self.horti] = 'string'
+        self.types[self.tipo_erro] = 'string'
+        self.types[self.quan_erros] = 'short'
 
+        self.types[self.pais] = 'string'
+        self.types[self.visao] = 'string'
+        self.types[self.conceito] = 'string'
+        self.types[self.item] = 'string'
+        self.types[self.evaluacao] = 'double'
+        self.types[self.benchmark] = 'double'
 
     def get_fieldtype(self, field):
         return self.types[field]

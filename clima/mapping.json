@@ -1,0 +1,22 @@
+{
+    "properties": {
+        "benchmark": {
+            "type": "double"
+        }, 
+        "conceito": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "evaluacao": {
+            "type": "double"
+        }, 
+        "item": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "visao": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }
+    }
+}
