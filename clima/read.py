@@ -15,6 +15,7 @@ CONCEITO = 2
 ITEM = 3
 EVALUACAO = 4
 BENCHMARK = 5
+ANO = 6
 
 class NoDataRecordException(Exception):
     pass
@@ -37,6 +38,7 @@ def parse(line):
         'item': register[ITEM],
         'evaluacao': get_float(register[EVALUACAO]),
         'benchmark': get_float(register[BENCHMARK]),
+        'ano': int(register[ANO]),
         })
 
 def read(filename):
@@ -53,7 +55,7 @@ def read(filename):
             line = line.strip()
             try:
                 clima = parse(line)
-                efg.add(clima,'%(pais)s-%(visao)s-%(conceito)s-%(item)s' % clima)
+                efg.add(clima,'%(ano)s-%(pais)s-%(visao)s-%(conceito)s-%(item)s' % clima)
 
             except NoDataRecordException:
                 pass

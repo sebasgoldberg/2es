@@ -111,6 +111,7 @@ class Lang:
         self.item = 'item'
         self.evaluacao = 'evaluacao'
         self.benchmark = 'benchmark'
+        self.ano = 'ano'
 
         self.types = {}
         self.types[self.material] = 'string'
@@ -210,6 +211,7 @@ class Lang:
         self.types[self.item] = 'string'
         self.types[self.evaluacao] = 'double'
         self.types[self.benchmark] = 'double'
+        self.types[self.ano] = 'long'
 
     def get_fieldtype(self, field):
         return self.types[field]

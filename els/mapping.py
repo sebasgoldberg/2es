@@ -148,6 +148,7 @@ clima.add(L.conceito)
 clima.add(L.item)
 clima.add(L.evaluacao)
 clima.add(L.benchmark)
+clima.add(L.ano)
 clima.save('./clima/mapping.json')
 
 from retail.mapping import RetailMapping

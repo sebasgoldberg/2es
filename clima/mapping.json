@@ -1,5 +1,8 @@
 {
     "properties": {
+        "ano": {
+            "type": "long"
+        }, 
         "benchmark": {
             "type": "double"
         }, 
@@ -11,6 +14,10 @@
             "type": "double"
         }, 
         "item": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "pais": {
             "index": "not_analyzed", 
             "type": "string"
         }, 
