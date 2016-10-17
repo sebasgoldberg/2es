@@ -78,15 +78,25 @@ class MappingFileGenerator:
         self.mapping = {}
         self.mapping['properties'] = {}
 
-    def add(self, field, fieldtype=None):
+    def add(self, field, node=None, fieldtype=None):
+        if node is None:
+            node = self.mapping['properties']
         if fieldtype is None:
-            fieldtype = L.get_fieldtype(field)
-        self.mapping['properties'][field] = {}
-        self.mapping['properties'][field]['type'] = fieldtype
+            try:
+                fieldtype = L.get_fieldtype(field)
+            except KeyError:
+                fieldtype = node[field]
+        node[field] = {}
+        if type(fieldtype) is dict:
+            node[field]['properties'] = {}
+            for _field in fieldtype.iterkeys():
+                self.add(_field, node[field]['properties'], fieldtype[_field])
+            return
+        node[field]['type'] = fieldtype
         if fieldtype == 'date':
-            self.mapping['properties'][field]['format'] = "yyyy-MM-dd HH:mm:ss"
+            node[field]['format'] = "yyyy-MM-dd HH:mm:ss"
         elif fieldtype == 'string':
-            self.mapping['properties'][field]['index'] = "not_analyzed"
+            node[field]['index'] = "not_analyzed"
 
     def save(self, filepath):
         with open(filepath,"w") as f:

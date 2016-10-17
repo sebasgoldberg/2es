@@ -16,3 +16,5 @@ retail*.json
 tags
 nfe*.json
 clima*.json
+*.swp
+nomina*.json

@@ -113,6 +113,21 @@ class Lang:
         self.benchmark = 'benchmark'
         self.ano = 'ano'
 
+        self.estabelecimento = 'estabelecimento'
+        self.matricula = 'matricula'
+        self.nome = 'nome'
+        self.cargo = 'cargo'
+        self.diretoria = 'diretoria'
+        self.unidad_lotacao = 'unidad_lotacao'
+        self.perfil = 'perfil'
+        self.faixa_etaria = 'faixa_etaria'
+        self.sexo = 'sexo'
+        self.tempo_casa = 'tempo_casa'
+        self.uf_trab = 'uf_trab'
+        self.localidade = 'localidade'
+        self.admissao = 'admissao'
+        self.nascimento = 'nascimento'
+
         self.types = {}
         self.types[self.material] = 'string'
         self.types[self.loja] = 'string'
@@ -212,6 +227,29 @@ class Lang:
         self.types[self.evaluacao] = 'double'
         self.types[self.benchmark] = 'double'
         self.types[self.ano] = 'long'
+
+        self.types[self.estabelecimento] = 'string'
+        self.types[self.matricula] = 'string'
+        self.types[self.nome] = 'string'
+        self.types[self.cargo] = 'string'
+        self.types[self.diretoria] = 'string'
+        self.types[self.unidad_lotacao] = 'string'
+        self.types[self.perfil] = 'string'
+        self.types[self.faixa_etaria] = 'string'
+        self.types[self.sexo] = 'string'
+        self.types[self.tempo_casa] = 'string'
+        self.types[self.uf_trab] = 'string'
+        self.types[self.localidade] = 'string'
+        self.types[self.admissao] = 'date'
+        self.types[self.nascimento] = 'date'
+        self.types['GPTW'] = {
+            'ano': 'short',
+            'visao': 'string',
+            'dimensao': 'string',
+            'num_item': 'short',
+            'item': 'string',
+            'avaliacao': 'short',
+            }
 
     def get_fieldtype(self, field):
         return self.types[field]

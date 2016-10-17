@@ -1,0 +1,93 @@
+{
+    "properties": {
+        "GPTW": {
+            "properties": {
+                "ano": {
+                    "type": "short"
+                }, 
+                "avaliacao": {
+                    "type": "short"
+                }, 
+                "dimensao": {
+                    "index": "not_analyzed", 
+                    "type": "string"
+                }, 
+                "item": {
+                    "index": "not_analyzed", 
+                    "type": "string"
+                }, 
+                "num_item": {
+                    "type": "short"
+                }, 
+                "visao": {
+                    "index": "not_analyzed", 
+                    "type": "string"
+                }
+            }
+        }, 
+        "admissao": {
+            "format": "yyyy-MM-dd HH:mm:ss", 
+            "type": "date"
+        }, 
+        "bandeira": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "cargo": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "diretoria": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "estabelecimento": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "faixa_etaria": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "localidade": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "matricula": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "nascimento": {
+            "format": "yyyy-MM-dd HH:mm:ss", 
+            "type": "date"
+        }, 
+        "nome": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "perfil": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "regional": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "sexo": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "tempo_casa": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "uf_trab": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "unidad_lotacao": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }
+    }
+}

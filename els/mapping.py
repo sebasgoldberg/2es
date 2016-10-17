@@ -151,6 +151,28 @@ clima.add(L.benchmark)
 clima.add(L.ano)
 clima.save('./clima/mapping.json')
 
+
+nomina = MappingFileGenerator()
+nomina.add(L.bandeira)
+nomina.add(L.regional)
+nomina.add(L.estabelecimento)
+nomina.add(L.matricula)
+nomina.add(L.nome)
+nomina.add(L.cargo)
+nomina.add(L.diretoria)
+nomina.add(L.unidad_lotacao)
+nomina.add(L.perfil)
+nomina.add(L.faixa_etaria)
+nomina.add(L.sexo)
+nomina.add(L.tempo_casa)
+nomina.add(L.uf_trab)
+nomina.add(L.localidade)
+nomina.add(L.nascimento)
+nomina.add(L.admissao)
+nomina.add('GPTW')
+nomina.save('./nomina/mapping.json')
+
+
 from retail.mapping import RetailMapping
 retail = RetailMapping()
 retail.save('./retail/mapping.json')
