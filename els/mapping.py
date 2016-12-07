@@ -153,6 +153,8 @@ clima.save('./clima/mapping.json')
 
 
 nomina = MappingFileGenerator()
+nomina.add(L.ano)
+nomina.add(L.visao)
 nomina.add(L.bandeira)
 nomina.add(L.regional)
 nomina.add(L.estabelecimento)
@@ -169,7 +171,11 @@ nomina.add(L.uf_trab)
 nomina.add(L.localidade)
 nomina.add(L.nascimento)
 nomina.add(L.admissao)
-nomina.add('GPTW')
+nomina.add('dimensao')
+nomina.add('num_item')
+nomina.add('item')
+nomina.add('avaliacao')
+nomina.add('data_avaliacao')
 nomina.save('./nomina/mapping.json')
 
 

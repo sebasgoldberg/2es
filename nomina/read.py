@@ -1,9 +1,10 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 #encoding=utf8
 __author__ = 'JSGold'
 
 import datetime
 import sys
+import copy
 
 BANDEIRA = 0
 REGIONAL = 1
@@ -32,6 +33,9 @@ class NoDataRecordException(Exception):
     pass
 
 class AprendizException(Exception):
+    pass
+
+class FuncionarioNaoExistiaException(Exception):
     pass
 
 def get_date(date):
@@ -93,7 +97,10 @@ TEMPO_CASA_VALUES = [
 ]
 
 def tempoCasaGPTW(nomina):
-    tempoCasaMeses = int((datetime.datetime.today() - nomina['admissao']).days * 12 / 365)
+    # Se o funcionario ingresso depois da avaliação, então não aplica.
+    if nomina['data_avaliacao'] < nomina['admissao']:
+        raise FuncionarioNaoExistiaException()
+    tempoCasaMeses = int((nomina['data_avaliacao'] - nomina['admissao']).days * 12 / 365)
     for (topeMeses,rango) in TEMPO_CASA_VALUES:
         if tempoCasaMeses <= topeMeses:
             return rango
@@ -108,7 +115,9 @@ FAIXA_ETARIA_VALUES = [
 ]
 
 def faixaEtariaGPTW(nomina):
-    faixaEtariaAnos = int((datetime.datetime.today() - nomina['nascimento']).days / 365)
+    if nomina['data_avaliacao'] < nomina['nascimento']:
+        raise FuncionarioNaoExistiaException()
+    faixaEtariaAnos = int((nomina['data_avaliacao'] - nomina['nascimento']).days / 365)
     for (topeAnos,rango) in FAIXA_ETARIA_VALUES:
         if faixaEtariaAnos <= topeAnos:
             return rango
@@ -143,25 +152,34 @@ def getAvaliacao(nomina, item):
     return avaliacao / quan_avaliacoes
 
 def addInfoGPTW(nomina, GPTW):
-    nomina['GPTW'] = []
-    for ano, anodict in GPTW.iteritems():
-        for visao, visaodict in anodict.iteritems():
-            for item in visaodict['items']:
-                avaliacao = getAvaliacao(nomina, item)
-                nomina['GPTW'].append({
-                    'ano': ano,
-                    'visao': visao,
-                    'dimensao': item['dimensao'],
-                    'num_item': item['num_item'],
-                    'item': item['item'],
-                    'avaliacao': avaliacao,
-                })
-    return nomina
+    nominas = []
+    for ano, anodict in GPTW.items():
+        try:
+            nomina['data_avaliacao'] = datetime.datetime(ano,10,1,12)
+            nomina['tempo_casa'] = tempoCasaGPTW(nomina)
+            nomina['faixa_etaria'] = faixaEtariaGPTW(nomina)
+            for visao, visaodict in anodict.items():
+                for item in visaodict['items']:
+                    nomina_copy = copy.copy(nomina)
+                    nomina_copy.update({
+                        'ano': ano,
+                        'visao': visao,
+                        })
+                    nomina_copy['GPTW'] = []
+                    avaliacao = getAvaliacao(nomina_copy, item)
+                    nomina_copy.update({
+                        'dimensao': item['dimensao'],
+                        'num_item': item['num_item'],
+                        'item': item['item'],
+                        'avaliacao': avaliacao,
+                    })
+                    nominas.append(nomina_copy)
+        except FuncionarioNaoExistiaException:
+            pass
+    return nominas
 
 def toGPTW(nomina, GPTW):
     nomina['perfil'] = perfilGPTW(nomina)
-    nomina['tempo_casa'] = tempoCasaGPTW(nomina)
-    nomina['faixa_etaria'] = faixaEtariaGPTW(nomina)
     return addInfoGPTW(nomina, GPTW)
 
 
@@ -176,10 +194,14 @@ def read(filename, GPTW):
             line = line.strip()
             #line = line.decode("utf8","replace")
             try:
-                nomina = toGPTW(parse(line), GPTW)
-                nomina['admissao'] = str(nomina['admissao'])
-                nomina['nascimento'] = str(nomina['nascimento'])
-                efg.add(nomina, nomina['matricula'])
+                nominas = toGPTW(parse(line), GPTW)
+                for n in nominas:
+                    n['admissao'] = str(int(n['admissao'].timestamp())*1000)
+                    n['nascimento'] = str(int(n['nascimento'].timestamp())*1000)
+                    n['data_avaliacao'] = str(int(n['data_avaliacao'].timestamp())*1000)
+                    #del n['data_avaliacao']
+                    id = '%s-%s-%s-%s' % (n['ano'], n['visao'], n['num_item'], n['matricula'])
+                    efg.add(n, id)
 
             except NoDataRecordException:
                 pass
@@ -204,7 +226,7 @@ def createGPTWFromFile(arquivo):
             lineNum = lineNum + 1
             if lineNum == 1:
                 continue
-            line = line.decode('utf8')
+            #line = line.decode('utf8')
             line.strip()
             register = line.split('\t')
             for i in range(len(register)):
@@ -214,7 +236,7 @@ def createGPTWFromFile(arquivo):
                 continue
             if lineNum in [3, 4]:
                 continue
-            if register[DIMENSAO] <> '':
+            if register[DIMENSAO] != '':
                 dimensao = register[DIMENSAO]
             if register[NUM_ITEM] == '':
                 continue
@@ -237,7 +259,7 @@ def createGPTW():
     GPTW_FOLDER = 'nomina'
 
     GPTW = {
-        '2014': {
+        2014: {
             'Area': {
                 'arquivo': '%s/GPTW-2014-area.xls' % GPTW_FOLDER,
             },
@@ -245,7 +267,7 @@ def createGPTW():
                 'arquivo': '%s/GPTW-2014-companhia.xls' % GPTW_FOLDER,
             },
         },
-        '2015': {
+        2015: {
             'Area': {
                 'arquivo': '%s/GPTW-2015-area.xls' % GPTW_FOLDER,
             },
@@ -253,10 +275,18 @@ def createGPTW():
                 'arquivo': '%s/GPTW-2015-companhia.xls' % GPTW_FOLDER,
             },
         },
+        2016: {
+            'Area': {
+                'arquivo': '%s/GPTW-2016-area.xls' % GPTW_FOLDER,
+            },
+            'Companhia': {
+                'arquivo': '%s/GPTW-2016-companhia.xls' % GPTW_FOLDER,
+            },
+        },
     }
 
-    for ano, anodict in GPTW.iteritems():
-        for visao, visaodict in anodict.iteritems():
+    for ano, anodict in GPTW.items():
+        for visao, visaodict in anodict.items():
             GPTW[ano][visao]['items'] = createGPTWFromFile(visaodict['arquivo'])
     return GPTW
 

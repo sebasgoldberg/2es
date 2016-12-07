@@ -1,39 +1,28 @@
 {
     "properties": {
-        "GPTW": {
-            "properties": {
-                "ano": {
-                    "type": "short"
-                }, 
-                "avaliacao": {
-                    "type": "short"
-                }, 
-                "dimensao": {
-                    "index": "not_analyzed", 
-                    "type": "string"
-                }, 
-                "item": {
-                    "index": "not_analyzed", 
-                    "type": "string"
-                }, 
-                "num_item": {
-                    "type": "short"
-                }, 
-                "visao": {
-                    "index": "not_analyzed", 
-                    "type": "string"
-                }
-            }
-        }, 
         "admissao": {
-            "format": "yyyy-MM-dd HH:mm:ss", 
+            "format": "epoch_millis", 
             "type": "date"
+        }, 
+        "ano": {
+            "type": "long"
+        }, 
+        "avaliacao": {
+            "type": "short"
         }, 
         "bandeira": {
             "index": "not_analyzed", 
             "type": "string"
         }, 
         "cargo": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "data_avaliacao": {
+            "format": "epoch_millis", 
+            "type": "date"
+        }, 
+        "dimensao": {
             "index": "not_analyzed", 
             "type": "string"
         }, 
@@ -49,6 +38,10 @@
             "index": "not_analyzed", 
             "type": "string"
         }, 
+        "item": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
         "localidade": {
             "index": "not_analyzed", 
             "type": "string"
@@ -58,12 +51,15 @@
             "type": "string"
         }, 
         "nascimento": {
-            "format": "yyyy-MM-dd HH:mm:ss", 
+            "format": "epoch_millis", 
             "type": "date"
         }, 
         "nome": {
             "index": "not_analyzed", 
             "type": "string"
+        }, 
+        "num_item": {
+            "type": "short"
         }, 
         "perfil": {
             "index": "not_analyzed", 
@@ -86,6 +82,10 @@
             "type": "string"
         }, 
         "unidad_lotacao": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "visao": {
             "index": "not_analyzed", 
             "type": "string"
         }

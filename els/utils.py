@@ -92,9 +92,16 @@ class MappingFileGenerator:
             for _field in fieldtype.iterkeys():
                 self.add(_field, node[field]['properties'], fieldtype[_field])
             return
-        node[field]['type'] = fieldtype
+
+        if fieldtype == 'timestamp':
+            node[field]['type'] = 'date'
+        else:
+            node[field]['type'] = fieldtype
+
         if fieldtype == 'date':
             node[field]['format'] = "yyyy-MM-dd HH:mm:ss"
+        elif fieldtype == 'timestamp':
+            node[field]['format'] = "epoch_millis"
         elif fieldtype == 'string':
             node[field]['index'] = "not_analyzed"
 

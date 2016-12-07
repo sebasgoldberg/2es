@@ -240,16 +240,13 @@ class Lang:
         self.types[self.tempo_casa] = 'string'
         self.types[self.uf_trab] = 'string'
         self.types[self.localidade] = 'string'
-        self.types[self.admissao] = 'date'
-        self.types[self.nascimento] = 'date'
-        self.types['GPTW'] = {
-            'ano': 'short',
-            'visao': 'string',
-            'dimensao': 'string',
-            'num_item': 'short',
-            'item': 'string',
-            'avaliacao': 'short',
-            }
+        self.types[self.admissao] = 'timestamp'
+        self.types[self.nascimento] = 'timestamp'
+        self.types['dimensao'] = 'string'
+        self.types['num_item'] = 'short'
+        self.types['item'] = 'string'
+        self.types['avaliacao'] = 'short'
+        self.types['data_avaliacao'] = 'timestamp'
 
     def get_fieldtype(self, field):
         return self.types[field]

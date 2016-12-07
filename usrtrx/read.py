@@ -18,10 +18,9 @@ class NoDataRecordException(Exception):
     pass
 
 def parse(line):
-    register = line.split('|')
-    if len(register) <= 3:
+    register = line.split('\t')
+    if len(register) < 6:
         raise NoDataRecordException(u'Registro de datos no encontrado')
-    register = register[1:-1]
     for i in range(len(register)):
         register[i] = register[i].strip()
     if register[0] == "Ano":
@@ -42,8 +41,6 @@ def read(filename):
     with open(filename, 'r') as f:
         for line in f:
             lineNum = lineNum + 1
-            if lineNum <= 5:
-                continue
 
             line = line.strip()
             line = line.decode("utf8","replace")
@@ -52,8 +49,8 @@ def read(filename):
                 usrtrx['fecha'] = str(usrtrx['fecha'])
                 efg.add(usrtrx)
 
-            except NoDataRecordException:
-                pass
+            except NoDataRecordException as e:
+                print(e)
             #except Exception:
                 #print(line)
 
