@@ -25,6 +25,7 @@ TEMPO_CASA = 15
 MES = 16
 UF_TRAB = 17
 LOCALIDADE = 18
+SUBAREA = 19
 
 sys.path.append('./')
 from els.utils import ElasticFilesGenerator
@@ -50,6 +51,11 @@ def parse(line):
         register[i] = register[i].strip()
     if register[0] == "BAND.":
         raise NoDataRecordException(u"El registro de cabecera no es un registro de datos")
+    try:
+        if register[SUBAREA] == "":
+            register[SUBAREA] = "Outra"
+    except IndexError:
+        register.append("Outra")
     return ({"bandeira": register[BANDEIRA],
         "regional": register[REGIONAL],
         "estabelecimento": register[ESTABELECIMENTO],
@@ -69,6 +75,7 @@ def parse(line):
         #"mes": register[MES],
         "uf_trab": register[UF_TRAB],
         "localidade": register[LOCALIDADE],
+        "subarea": register[SUBAREA],
         })
 
 def perfilGPTW(nomina):

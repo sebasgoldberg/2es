@@ -176,6 +176,7 @@ nomina.add('num_item')
 nomina.add('item')
 nomina.add('avaliacao')
 nomina.add('data_avaliacao')
+nomina.add('subarea')
 nomina.save('./nomina/mapping.json')
 
 
