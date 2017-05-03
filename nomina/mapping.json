@@ -73,10 +73,6 @@
             "index": "not_analyzed", 
             "type": "string"
         }, 
-        "subarea": {
-            "index": "not_analyzed", 
-            "type": "string"
-        }, 
         "tempo_casa": {
             "index": "not_analyzed", 
             "type": "string"

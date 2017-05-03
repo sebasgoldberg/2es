@@ -17,8 +17,39 @@ from els.utils import ElasticFilesGenerator
 class NoDataRecordException(Exception):
     pass
 
+class FixedWidthLineToShortException(Exception):
+    pass
+
+#2015 04 ZVCOSTA      RFC                                     |       177|         0
+FIELDS_LENGTHS = (4, 2, 12, 40, 10, 10)
+LENGTH_TO_IGNORE_BETW_FIELDS = 1
+
+def from_fixed_width(line, lengths, ignore_between=0):
+
+    if len(lengths) == 0:
+        return []
+
+    total_length = sum(lengths) + (len(lengths)-1)*ignore_between
+
+    if len(line) < total_length:
+        raise FixedWidthLineToShortException(u'Line to short.')
+
+    idx_from = 0
+    idx_to = lengths[0]
+    fields = []
+    fields.append(line[idx_from:idx_to])
+
+    for i in lengths[1:]:
+        idx_from = idx_to + ignore_between
+        idx_to = idx_from + i
+        fields.append(line[idx_from:idx_to])
+
+    return fields
+
+
 def parse(line):
-    register = line.split('\t')
+    #register = line.split('\t')
+    register = from_fixed_width(line, FIELDS_LENGTHS, LENGTH_TO_IGNORE_BETW_FIELDS)
     if len(register) < 6:
         raise NoDataRecordException(u'Registro de datos no encontrado')
     for i in range(len(register)):
@@ -30,7 +61,7 @@ def parse(line):
     return ({"usuario": register[USUARIO],
         "transaccion": register[TRANSACCION],
         "pasos": float(register[PASOS].replace('.','').replace(',','.')),
-        "fecha": datetime.date(int(register[ANO]),int(register[PERIODO]),15),})
+        "fecha": datetime.datetime(int(register[ANO]),int(register[PERIODO]),15,12),})
 
 
 def read(filename):
@@ -49,10 +80,12 @@ def read(filename):
                 usrtrx['fecha'] = str(usrtrx['fecha'])
                 efg.add(usrtrx)
 
+            except FixedWidthLineToShortException as e:
+                print('%s: %s' % (e, line) )
             except NoDataRecordException as e:
                 print(e)
             #except Exception:
                 #print(line)
 
-for f in sys.argv:
+for f in sys.argv[1:]:
     read(f)

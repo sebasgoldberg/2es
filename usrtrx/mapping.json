@@ -1,0 +1,19 @@
+{
+    "properties": {
+        "fecha": {
+            "format": "yyyy-MM-dd HH:mm:ss", 
+            "type": "date"
+        }, 
+        "pasos": {
+            "type": "long"
+        }, 
+        "transaccion": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }, 
+        "usuario": {
+            "index": "not_analyzed", 
+            "type": "string"
+        }
+    }
+}

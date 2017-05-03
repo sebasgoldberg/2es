@@ -33,6 +33,14 @@ venda.add(L.venda_liquida)
 
 venda.save('./venda/mapping.json')
 
+usrtrx = MappingFileGenerator()
+usrtrx.add('usuario')
+usrtrx.add('transaccion')
+usrtrx.add('pasos')
+usrtrx.add('fecha')
+usrtrx.save('./usrtrx/mapping.json')
+
+
 
 ruptura = MappingFileGenerator()
 ruptura.add(L.loja)
@@ -176,7 +184,6 @@ nomina.add('num_item')
 nomina.add('item')
 nomina.add('avaliacao')
 nomina.add('data_avaliacao')
-nomina.add('subarea')
 nomina.save('./nomina/mapping.json')
 
 

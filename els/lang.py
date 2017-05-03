@@ -247,7 +247,11 @@ class Lang:
         self.types['item'] = 'string'
         self.types['avaliacao'] = 'short'
         self.types['data_avaliacao'] = 'timestamp'
-        self.types['subarea'] = 'string'
+
+        self.types['usuario'] = 'string'
+        self.types['transaccion'] = 'string'
+        self.types['pasos'] = 'long'
+        self.types['fecha'] = 'date'
 
     def get_fieldtype(self, field):
         return self.types[field]
