@@ -8,12 +8,12 @@
             "type": "long"
         }, 
         "transaccion": {
-            "index": "not_analyzed", 
-            "type": "string"
+            "type": "keyword",
+            "normalizer": "lowercase_normalizer"
         }, 
         "usuario": {
-            "index": "not_analyzed", 
-            "type": "string"
+            "type": "keyword",
+            "normalizer": "lowercase_normalizer"
         }
     }
 }

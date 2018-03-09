@@ -19,3 +19,5 @@ clima*.json
 *.swp
 nomina*.json
 *.gz
+*.xls
+archiving*.json

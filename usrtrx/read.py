@@ -54,7 +54,7 @@ def parse(line):
         raise NoDataRecordException(u'Registro de datos no encontrado')
     for i in range(len(register)):
         register[i] = register[i].strip()
-    if register[0] == "Ano":
+    if register[0].lower() in  ["ano", 'gjah', '----']:
         raise NoDataRecordException(u"El registro de cabecera no es un registro de datos")
     if register[0] == "*":
         raise NoDataRecordException(u"El registro de totales no es un registro de datos")
@@ -78,7 +78,7 @@ def read(filename):
             try:
                 usrtrx = parse(line)
                 usrtrx['fecha'] = str(usrtrx['fecha'])
-                efg.add(usrtrx)
+                efg.add(usrtrx,'%(fecha)s-%(transaccion)s-%(usuario)s' % usrtrx)
 
             except FixedWidthLineToShortException as e:
                 print('%s: %s' % (e, line) )
