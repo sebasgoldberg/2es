@@ -5,11 +5,6 @@ __author__ = 'JSGold'
 import datetime
 import sys
 
-date = datetime.datetime.now()
-NOW = date.strftime("%Y/%m/%d %H:%M:%S")
-YEAR = date.year
-MONTH = date.month
-
 OWNER = 0
 SEGMENT = 1
 PARTITION = 2
@@ -19,6 +14,7 @@ SIZE_MB = 7
             
 sys.path.append('./')
 from els.utils import ElasticFilesGenerator
+efg = ElasticFilesGenerator("archiving","archiving","archiving")
 
 class NoDataRecordException(Exception):
     pass
@@ -80,7 +76,12 @@ def parse(line):
 def read(filename, dbtables):
 
     lineNum = 0
-    efg = ElasticFilesGenerator("archiving","archiving","archiving")
+    
+    filename_parts = filename.split('-')
+    year, month, day, system = filename_parts[0:4]
+    date = datetime.datetime(int(year), int(month), int(day), 12)
+
+    timestamp = date.strftime("%Y/%m/%d %H:%M:%S")
 
     with open(filename, 'r') as f:
         for line in f:
@@ -91,7 +92,8 @@ def read(filename, dbtables):
             line = line.strip()
 
             archiving = parse(line)
-            archiving["@timestamp"] = NOW
+            archiving["@timestamp"] = timestamp
+            archiving["system"] = system
 
             try:
                 dbtable = dbtables.get_from_segment_reg(archiving['segment'])
@@ -104,9 +106,11 @@ def read(filename, dbtables):
             except DBTableDoesNotExist:
                 pass
 
-            efg.add(archiving,'%s-%s-%s-%s-%s-%s-%s' % (
-                YEAR,
-                MONTH,
+            efg.add(archiving,'%s-%s-%s-%s-%s-%s-%s-%s-%s' % (
+                year,
+                month,
+                day,
+                system,
                 archiving['segment']['owner'],
                 archiving['segment']['name'],
                 archiving['segment']['partition'],

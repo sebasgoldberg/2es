@@ -21,3 +21,4 @@ nomina*.json
 *.gz
 *.xls
 archiving*.json
+*.swo
