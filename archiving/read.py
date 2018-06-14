@@ -91,32 +91,35 @@ def read(filename, dbtables):
 
             line = line.strip()
 
-            archiving = parse(line)
-            archiving["@timestamp"] = timestamp
-            archiving["system"] = system
-
             try:
-                dbtable = dbtables.get_from_segment_reg(archiving['segment'])
-                archiving['dbtable'] = {
-                    'name': dbtable.name,
-                    'type': dbtable.type,
-                    'sap_tables': list(dbtable.sap_tables),
-                    'archiving_objects': list(dbtable.archiving_objects),
-                    }
-            except DBTableDoesNotExist:
-                pass
+                archiving = parse(line)
+                archiving["@timestamp"] = timestamp
+                archiving["system"] = system
 
-            efg.add(archiving,'%s-%s-%s-%s-%s-%s-%s-%s-%s' % (
-                year,
-                month,
-                day,
-                system,
-                archiving['segment']['owner'],
-                archiving['segment']['name'],
-                archiving['segment']['partition'],
-                archiving['segment']['type'],
-                archiving['segment']['table_space'],
-                ))
+                try:
+                    dbtable = dbtables.get_from_segment_reg(archiving['segment'])
+                    archiving['dbtable'] = {
+                        'name': dbtable.name,
+                        'type': dbtable.type,
+                        'sap_tables': list(dbtable.sap_tables),
+                        'archiving_objects': list(dbtable.archiving_objects),
+                        }
+                except DBTableDoesNotExist:
+                    pass
+
+                efg.add(archiving,'%s-%s-%s-%s-%s-%s-%s-%s-%s' % (
+                    year,
+                    month,
+                    day,
+                    system,
+                    archiving['segment']['owner'],
+                    archiving['segment']['name'],
+                    archiving['segment']['partition'],
+                    archiving['segment']['type'],
+                    archiving['segment']['table_space'],
+                    ))
+            except:
+                print('ERRO em linea: %s' % line)
 
 
 class DBTable:
