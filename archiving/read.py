@@ -12,7 +12,7 @@ TYPE = 3
 TABLE_SPACE = 4
 SIZE_MB = 7
             
-sys.path.append('./')
+sys.path.append('../')
 from els.utils import ElasticFilesGenerator
 efg = ElasticFilesGenerator("archiving","archiving","archiving")
 
